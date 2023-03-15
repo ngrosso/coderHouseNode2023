@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const dir = "./files";
+const dir = "./files/";
 const fileName = "./files/desafioFechaHora.txt";
 
 const currentDate = new Date().toLocaleString();
