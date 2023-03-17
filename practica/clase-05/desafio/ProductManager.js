@@ -2,16 +2,16 @@ const fs = require("fs");
 
 class ProductManager {
 
-  id = Number;
-  products = Array;
+  #id = Number;
+  #products = Array;
   path = String;
   dir = String;
 
   constructor() {
     this.dir = "./files/"
-    this.path = "./files/products.json"
-    this.id = 1;
-    this.products = [];
+    this.path = `${this.dir}products.json`
+    this.#id = 1;
+    this.#products = [];
   }
 
   async init() {
@@ -25,9 +25,9 @@ class ProductManager {
     } else {
       try {
         const productListFile = await fs.promises.readFile(this.path, 'utf-8');
-        this.products = JSON.parse(productListFile);
-        if (this.products.length > 0) {
-          this.id = Math.max(...this.products.map(obj => obj.id)) + 1;
+        this.#products = JSON.parse(productListFile);
+        if (this.#products.length > 0) {
+          this.#id = Math.max(...this.#products.map(obj => obj.id)) + 1;
         }
       } catch (e) {
         throw new Error(e);
@@ -36,11 +36,11 @@ class ProductManager {
   }
 
   async addProduct(product) {
-    if (this.products.find(p => p.code === product.code)) return console.log(new RepeatedCodeError(product.code));
-    product["id"] = this.id++;
-    this.products.push(product);
+    if (this.#products.find(p => p.code === product.code)) return console.log(new RepeatedCodeError(product.code));
+    product["id"] = this.#id++;
+    this.#products.push(product);
     try {
-      await fs.promises.writeFile(this.path, JSON.stringify(this.products));
+      await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
       return product;
     } catch (e) {
       throw new Error(e);
@@ -49,8 +49,8 @@ class ProductManager {
 
   async getProducts() {
     try {
-      this.products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
-      return this.products;
+      this.#products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+      return this.#products;
     } catch (e) {
       throw new Error(e);
     }
@@ -58,11 +58,11 @@ class ProductManager {
 
   async getProductById(id) {
     try {
-      this.products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+      this.#products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
     } catch (e) {
       throw new Error(e);
     }
-    const product = this.products.find(product => product.id === id);
+    const product = this.#products.find(product => product.id === id);
     if (product) {
       return product;
     } else {
@@ -76,13 +76,8 @@ class ProductManager {
   o todos los campos a modificar updateProduct(id, {campo: valor, campo: valor, campo: valor})*/
   async updateProduct(id, product) {
     const { title, description, price, thumbnail, code, stock } = product;
-    let productToModify = undefined;
-    try {
-      productToModify = await this.getProductById(id);
-    } catch (e) {
-      throw new Error(e);
-    }
-    if (this.products.find(p => p.code === code)) return console.log(new RepeatedCodeError(product.code));
+    const productToModify = await this.getProductById(id);
+    if (this.#products.find(p => p.code === code)) return console.log(new RepeatedCodeError(product.code));
     if (productToModify) {
       const productNewValues = {
         title: title ?? productToModify.title,
@@ -92,23 +87,22 @@ class ProductManager {
         code: code ?? productToModify.code,
         stock: stock ?? productToModify.stock
       };
-      this.products[this.products.indexOf(productToModify)] = { ...productToModify, ...productNewValues };
+      this.#products[this.#products.indexOf(productToModify)] = { ...productToModify, ...productNewValues };
       try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.products));
+        await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
       } catch (e) {
         throw new Error(e);
       }
       return await this.getProductById(id);
     }
-    console.log(new ProductDoesntExistError(id));
   }
 
   async deleteProduct(id) {
     const productToDelete = await this.getProductById(id);
     if (productToDelete) {
-      this.products.splice(this.products.indexOf(productToDelete), 1);
+      this.#products.splice(this.#products.indexOf(productToDelete), 1);
       try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.products));
+        await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
         return productToDelete;
       } catch (e) {
         throw new Error(e);
@@ -131,6 +125,7 @@ class ProductDoesntExistError extends Error {
 
 
 const main = async () => {
+  // Productos de prueba
   const producto1 = {
     title: "producto Prueba",
     description: "Este es un producto prueba",
@@ -155,7 +150,6 @@ const main = async () => {
     code: "cde345",
     stock: 35
   }
-
 
   // Se creará una instancia de la clase “ProductManager”
   let productManager = new ProductManager()
@@ -190,7 +184,6 @@ const main = async () => {
   console.log(await productManager.addProduct(producto2));
   console.log(console.log(`========= Get Products (cantidad: ${(await productManager.getProducts()).length} productos) =========`));
   console.log(await productManager.getProducts());
-
   // Se llamará al método “updateProduct” y se intentará cambiar un campo de algún producto, se evaluará que no se elimine el id y que sí se haya hecho la actualización.
   console.log("============= Update Product (Solo title) =============");
   console.log(await productManager.updateProduct(1, { title: "producto Prueba4" }));
@@ -198,7 +191,6 @@ const main = async () => {
   console.log(await productManager.updateProduct(2, producto5Update));
   console.log("============= Update Product (Error mismo codigo) =============");
   console.log(await productManager.updateProduct(2, producto1));
-
   // Se llamará al método “deleteProduct”, se evaluará que realmente se elimine el producto o que arroje un error en caso de no existir.
   console.log("============= Delete Product =============");
   console.log(await productManager.deleteProduct(1));
