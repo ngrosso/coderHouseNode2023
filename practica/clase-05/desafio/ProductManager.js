@@ -70,6 +70,10 @@ class ProductManager {
     }
   }
 
+  /* permite modificar uno o mas campos de un producto llamando: 
+  updateProduct(id, {campo: valor}) 
+  updateProduct(id, {campo: valor, campo: valor}) 
+  o todos los campos a modificar updateProduct(id, {campo: valor, campo: valor, campo: valor})*/
   async updateProduct(id, product) {
     const { title, description, price, thumbnail, code, stock } = product;
     let productToModify = undefined;
