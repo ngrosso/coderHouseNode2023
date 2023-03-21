@@ -100,7 +100,7 @@ class ProductManager {
   async deleteProduct(id) {
     const productToDelete = await this.getProductById(id);
     if (productToDelete) {
-      this.#products.splice(this.#products.indexOf(productToDelete), 1);
+      this.#products = this.#products.filter(product => product != productToDelete);
       try {
         await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
         return productToDelete;
@@ -108,6 +108,7 @@ class ProductManager {
         throw new Error(e);
       }
     }
+    console.log(new ProductDoesntExistError(id));
   }
 }
 
