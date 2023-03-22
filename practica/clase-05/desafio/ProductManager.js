@@ -194,7 +194,7 @@ const main = async () => {
   console.log(await productManager.updateProduct(2, producto1));
   // Se llamará al método “deleteProduct”, se evaluará que realmente se elimine el producto o que arroje un error en caso de no existir.
   console.log("============= Delete Product =============");
-  console.log(await productManager.deleteProduct(1));
+  //console.log(await productManager.deleteProduct(1));
   console.log(`========= Get Products (cantidad: ${(await productManager.getProducts()).length} productos) =========`);
   console.log(await productManager.getProducts());
 }
