@@ -1,5 +1,7 @@
 import fs from "fs";
 
+import Product from "./Product.js";
+
 class ProductManager {
 
   #id = Number;
@@ -36,12 +38,22 @@ class ProductManager {
   }
 
   async addProduct(product) {
-    if (this.#products.find(p => p.code === product.code)) throw new RepeatedCodeError(product.code);
-    product["id"] = this.#id++;
-    this.#products.push(product);
+    const { title, description, price, thumbnail, code, stock, status, category } = product;
+    if (typeof (title) !== "string") throw new InvalidProductError("title")
+    if (typeof (description) !== "string") throw new InvalidProductError("description")
+    if (typeof (price) !== "number") throw new InvalidProductError("price")
+    if (typeof (thumbnail) !== "object") throw new InvalidProductError("thumbnail")
+    if (typeof (code) !== "string") throw new InvalidProductError("code")
+    if (typeof (stock) !== "number") throw new InvalidProductError("stock");
+    if (typeof (status) !== "boolean") throw new InvalidProductError("status");
+    if (typeof (category) !== "string") throw new InvalidProductError("category");
+    const productObject = new Product(product.title, product.description, product.price, product.thumbnail, product.code, product.stock, product.status, product.category);
+    if (this.#products.find(p => p.code === productObject.code)) throw new RepeatedCodeError(product.code);
+    productObject["id"] = this.#id++;
+    this.#products.push(productObject);
     try {
       await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
-      return product;
+      return productObject;
     } catch (e) {
       throw new Error(e);
     }
@@ -75,25 +87,35 @@ class ProductManager {
   updateProduct(id, {campo: valor, campo: valor}) 
   o todos los campos a modificar updateProduct(id, {campo: valor, campo: valor, campo: valor})*/
   async updateProduct(id, product) {
-    const { title, description, price, thumbnail, code, stock } = product;
+    const { title, description, price, thumbnail, code, stock, status, category } = product;
+    if (typeof (title) !== "string" && title !== undefined) throw new InvalidProductError("title")
+    if (typeof (description) !== "string" && description !== undefined) throw new InvalidProductError("description")
+    if (typeof (price) !== "number" && price !== undefined) throw new InvalidProductError("price")
+    if (typeof (thumbnail) !== "object" && thumbnail !== undefined) throw new InvalidProductError("thumbnail")
+    if (typeof (code) !== "string" && code !== undefined) throw new InvalidProductError("code")
+    if (typeof (stock) !== "number" && stock !== undefined) throw new InvalidProductError("stock");
+    if (typeof (status) !== "boolean" && status !== undefined) throw new InvalidProductError("status");
+    if (typeof (category) !== "string" && category !== undefined) throw new InvalidProductError("category");
     const productToModify = await this.getProductById(id);
     if (this.#products.find(p => p.code === code)) throw new RepeatedCodeError(product.code);
     if (productToModify) {
-      const productNewValues = {
-        title: title ?? productToModify.title,
-        description: description ?? productToModify.description,
-        price: price ?? productToModify.price,
-        thumbnail: thumbnail ?? productToModify.thumbnail,
-        code: code ?? productToModify.code,
-        stock: stock ?? productToModify.stock
-      };
+      const productNewValues = new Product(
+        title ?? productToModify.title,
+        description ?? productToModify.description,
+        price ?? productToModify.price,
+        thumbnail ?? productToModify.thumbnail,
+        code ?? productToModify.code,
+        stock ?? productToModify.stock,
+        status ?? productToModify.status,
+        category ?? productToModify.category
+      );
       this.#products[this.#products.indexOf(productToModify)] = { ...productToModify, ...productNewValues };
       try {
         await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
       } catch (e) {
         throw new Error(e);
       }
-      return await this.getProductById(id);
+      return productNewValues;
     }
   }
 
@@ -121,6 +143,12 @@ class RepeatedCodeError extends Error {
 class ProductDoesntExistError extends Error {
   constructor(id) {
     super(`Product Id:${id} Not Found!`);
+  }
+}
+
+class InvalidProductError extends Error {
+  constructor(param) {
+    super(`Product ${param} format is not valid!`);
   }
 }
 

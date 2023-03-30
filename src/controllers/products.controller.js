@@ -11,9 +11,9 @@ export class ProductController {
     const limit = req.query.limit;
     const productList = await productManager.getProducts();
     if (limit) {
-      res.send({ data: productList.slice(0, limit) });
+      res.status(200).json({ success: true, data: productList.slice(0, limit) });
     } else {
-      res.send({ data: productList });
+      res.status(200).json({ success: true, data: productList });
     }
   }
 
@@ -21,9 +21,9 @@ export class ProductController {
     const id = +req.params.pid;
     try {
       const product = await productManager.getProductById(id);
-      res.send({ data: product });
+      res.status(200).json({ succcess: true, data: product });
     } catch (e) {
-      res.send({ error: e.message });
+      res.status(400).json({ success: false, error: e.message });
     }
   }
 
@@ -32,9 +32,9 @@ export class ProductController {
     const product = req.body;
     try {
       const newProduct = await productManager.addProduct(product);
-      res.send({ data: newProduct });
+      res.status(201).json({ succcess: true, data: newProduct });
     } catch (e) {
-      res.send({ error: e.message });
+      res.status(400).json({ succcess: false, error: e.message });
     }
   }
 
@@ -44,9 +44,9 @@ export class ProductController {
     const product = req.body;
     try {
       const updatedProduct = await productManager.updateProduct(id, product);
-      res.send({ data: updatedProduct });
+      res.status(202).json({ succcess: true, data: updatedProduct });
     } catch (e) {
-      res.send({ error: e.message });
+      res.status(400).json({ succcess: false, error: e.message });
     }
   }
 
@@ -54,9 +54,9 @@ export class ProductController {
     const id = +req.params.pid;
     try {
       const deletedProduct = await productManager.deleteProduct(id);
-      res.send({ data: deletedProduct });
+      res.status(202).json({ succcess: true, data: deletedProduct });
     } catch (e) {
-      res.send({ error: e.message });
+      res.status(200).json({ succcess: false, error: e.message });
     }
   }
 

@@ -1,4 +1,7 @@
 import fs from "fs";
+import ProductManager from "./ProductManager.js";
+import Cart from "./Cart.js";
+import CartProduct from "./CartProduct.js";
 
 class CartManager {
 
@@ -6,12 +9,14 @@ class CartManager {
   #carts = Array;
   path = String;
   dir = String;
+  productManager = new ProductManager();
 
   constructor() {
     this.dir = "./src/utils/files/"
-    this.path = `${this.dir}products.json`
+    this.path = `${this.dir}carts.json`
     this.#id = 1;
     this.#carts = [];
+    this.productManager.init();
   }
 
   async init() {
@@ -35,98 +40,89 @@ class CartManager {
     }
   }
 
-  async addCart(cart) {
-    await this.init();
-    cart["id"] = this.#id++;
-    this.#carts.push(cart);
+  async addCart() {
+    const cartObj = new Cart(this.#id++, []);
+    this.#carts.push(cartObj);
     try {
       await fs.promises.writeFile(this.path, JSON.stringify(this.#carts));
-      return cart;
+      return cartObj;
     } catch (e) {
       throw new Error(e);
+    }
+  }
+
+  async addProductToCart(cid, pid, quantity) {
+    if(typeof(quantity) !== "number" || isNaN(quantity)) throw new InvalidInformationError("cantidad");
+    const cart = await this.getCartById(cid);
+    if (cart) {
+      const productExistsCheck = await this.productManager.getProductById(pid);
+      const productCart = cart.products.find(product => product.id === pid);
+      if(productCart){
+        this.#carts[this.#carts.indexOf(cart)].products[cart.products.indexOf(productCart)].quantity += quantity;
+      }else{
+        const productToAdd = new CartProduct(productExistsCheck.id, quantity);
+        this.#carts[this.#carts.indexOf(cart)].products.push(productToAdd);
+      } 
+      try {
+        await fs.promises.writeFile(this.path, JSON.stringify(this.#carts));
+        return cart;
+      } catch (e) {
+        throw new Error(e);
+      }
+    } else {
+      throw new CartDoesntExistError(cid);
     }
   }
 
   async getCarts() {
-    await this.init();
-    try {
-      this.#carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
-      return this.#carts;
-    } catch (e) {
-      throw new Error(e);
-    }
-  }
-
-  async getProductById(id) {
-    await this.init();
-    try {
-      this.#carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
-    } catch (e) {
-      throw new Error(e);
-    }
-    const product = this.#carts.find(product => product.id === id);
-    if (product) {
-      return product;
-    } else {
-      throw new ProductDoesntExistError(id);
-    }
-  }
-
-  /* permite modificar uno o mas campos de un producto llamando: 
-  updateProduct(id, {campo: valor}) 
-  updateProduct(id, {campo: valor, campo: valor}) 
-  o todos los campos a modificar updateProduct(id, {campo: valor, campo: valor, campo: valor})*/
-  async updateProduct(id, product) {
-    await this.init();
-    const { title, description, price, thumbnail, code, stock } = product;
-    const productToModify = await this.getProductById(id);
-    if (this.#carts.find(p => p.code === code)) throw new RepeatedCodeError(product.code);
-    if (productToModify) {
-      const productNewValues = {
-        title: title ?? productToModify.title,
-        description: description ?? productToModify.description,
-        price: price ?? productToModify.price,
-        thumbnail: thumbnail ?? productToModify.thumbnail,
-        code: code ?? productToModify.code,
-        stock: stock ?? productToModify.stock
-      };
-      this.#carts[this.#carts.indexOf(productToModify)] = { ...productToModify, ...productNewValues };
       try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.#carts));
-      } catch (e) {
-        throw new Error(e);
-      }
-      return await this.getProductById(id);
-    }
-  }
-
-  async deleteProduct(id) {
-    await this.init();
-    const productToDelete = await this.getProductById(id);
-    if (productToDelete) {
-      this.#carts = this.#carts.filter(product => product != productToDelete);
-      try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.#carts));
-        return productToDelete;
+        this.#carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+        return this.#carts;
       } catch (e) {
         throw new Error(e);
       }
     }
-    throw new ProductDoesntExistError(id);
-  }
-}
 
-class RepeatedCodeError extends Error {
-  constructor(code) {
-    super(`Product Code:${code} already exists!`);
-  }
-}
+  async getCartById(cid) {
+      try {
+        this.#carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+      } catch (e) {
+        throw new Error(e);
+      }
+      const cart = this.#carts.find(cart => cart.id === cid);
+      if (cart) {
+        return cart;
+      } else {
+        throw new CartDoesntExistError(cid);
+      }
+    }
 
-class ProductDoesntExistError extends Error {
+  async deleteCart(cid) {
+      const cartToDelete = await this.getCartById(cid);
+      if (cartToDelete) {
+        this.#carts = this.#carts.filter(cart => cart != cartToDelete);
+        try {
+          await fs.promises.writeFile(this.path, JSON.stringify(this.#carts));
+          return cartToDelete;
+        } catch (e) {
+          throw new Error(e);
+        }
+      }
+      throw new CartDoesntExistError(cid);
+    }
+  }
+
+class CartDoesntExistError extends Error {
   constructor(id) {
-    super(`Product Id:${id} Not Found!`);
+    super(`Cart Id:${id} Not Found!`);
   }
 }
 
-export default ProductManager;
+class InvalidInformationError extends Error{
+  constructor(info){
+    super(`Invalid ${info}!`);
+  }
+}
+
+export default CartManager;
 
