@@ -4,9 +4,13 @@ const cartManager = new CartManager();
 
 export class CartController {
   constructor() {
-    cartManager.init();
+    this.initCartManagerFiles();
   }
 
+  async initCartManagerFiles(){
+    await cartManager.init();
+  }
+  
   async getCarts(req, res) {
     try {
       const cartList = await cartManager.getCarts();
