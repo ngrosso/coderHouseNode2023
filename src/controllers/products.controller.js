@@ -4,7 +4,11 @@ const productManager = new ProductManager();
 
 export class ProductController {
   constructor() {
-    productManager.init();
+    this.initProductManagerFiles();
+  }
+
+  async initProductManagerFiles(){
+    await productManager.init();
   }
 
   async getProducts(req, res) {

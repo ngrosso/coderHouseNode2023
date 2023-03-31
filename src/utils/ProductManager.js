@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "fs/promises";
+
 
 import Product from "./Product.js";
 
@@ -17,16 +18,27 @@ class ProductManager {
   }
 
   async init() {
-    if (!fs.existsSync(this.dir)) fs.mkdirSync(this.dir);
-    if (!fs.existsSync(this.path)) {
+    let fileExists = false;
+    try {
+      await fs.access(this.dir);
+    } catch (e) {
+      await fs.mkdir(this.dir);
+    }
+    try {
+      await fs.stat(this.path)
+      fileExists = true;
+    } catch (e) {
+      fileExists = false;
+    }
+    if (!fileExists) {
       try {
-        await fs.promises.writeFile(this.path, "[]");
+        await fs.writeFile(this.path, "[]");
       } catch (e) {
         throw new Error(e);
       }
     } else {
       try {
-        const productListFile = await fs.promises.readFile(this.path, 'utf-8');
+        const productListFile = await fs.readFile(this.path, 'utf-8');
         this.#products = JSON.parse(productListFile);
         if (this.#products.length > 0) {
           this.#id = Math.max(...this.#products.map(obj => obj.id)) + 1;
@@ -52,7 +64,7 @@ class ProductManager {
     productObject["id"] = this.#id++;
     this.#products.push(productObject);
     try {
-      await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
+      await fs.writeFile(this.path, JSON.stringify(this.#products));
       return productObject;
     } catch (e) {
       throw new Error(e);
@@ -61,7 +73,7 @@ class ProductManager {
 
   async getProducts() {
     try {
-      this.#products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+      this.#products = JSON.parse(await fs.readFile(this.path, "utf-8"));
       return this.#products;
     } catch (e) {
       throw new Error(e);
@@ -70,7 +82,7 @@ class ProductManager {
 
   async getProductById(id) {
     try {
-      this.#products = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+      this.#products = JSON.parse(await fs.readFile(this.path, "utf-8"));
     } catch (e) {
       throw new Error(e);
     }
@@ -111,7 +123,7 @@ class ProductManager {
       );
       this.#products[this.#products.indexOf(productToModify)] = { ...productToModify, ...productNewValues };
       try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
+        await fs.writeFile(this.path, JSON.stringify(this.#products));
       } catch (e) {
         throw new Error(e);
       }
@@ -124,7 +136,7 @@ class ProductManager {
     if (productToDelete) {
       this.#products = this.#products.filter(product => product != productToDelete);
       try {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
+        await fs.writeFile(this.path, JSON.stringify(this.#products));
         return productToDelete;
       } catch (e) {
         throw new Error(e);
