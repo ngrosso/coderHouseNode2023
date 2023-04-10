@@ -1,0 +1,38 @@
+<div>
+    <h1>Hola, {{name}}, como andas?</h1>
+
+    <div id="mensajes">
+
+    </div>
+    <input type="text" id="message">
+</div>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+    crossorigin="anonymous"></script>
+<script>
+    const socket = io();
+    socket.on('connection', (data) => {
+        console.log(data);
+
+    });
+    let inputMensaje = document.querySelector("#message");
+    inputMensaje.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            console.log("enter");
+            event.preventDefault();
+            send();
+        }
+    });
+    let divMensajes = document.querySelector("#mensajes");
+    socket.on('new-message', (data) => {
+        console.log(data);
+        divMensajes.innerHTML += `<p>${data}</p>`;
+    });
+    function send() {
+        let message = document.querySelector("#message").value;
+        divMensajes.innerHTML += `<p>${message}</p>`;
+        socket.emit('new-message', message);
+
+        document.querySelector("#message").value = "";
+    }
+</script>

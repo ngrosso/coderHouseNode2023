@@ -1,6 +1,8 @@
+import { Socket } from 'dgram';
 import express from 'express';
 import { engine } from 'express-handlebars';
 import { resolve } from 'path';
+import { Server } from 'socket.io';
 
 void (async () => {
   try {
@@ -25,9 +27,21 @@ void (async () => {
       res.render('greetings', { name: 'Nicolas', title: 'My First Page' })
     });
 
-    app.listen(SERVER_PORT, () => {
+    const httpServer = app.listen(SERVER_PORT, () => {
       console.log(`Conectado al server en el puerto: ${SERVER_PORT}`);
     });
+
+    const io = new Server(httpServer);
+    let messages = [];
+    io.on('connection', (socket) => {
+      console.log('Nuevo cliente conectado!');
+      socket.on('new-message', (data) => {
+        console.log(data);
+        messages.push(data);
+        socket.broadcast.emit('new-message', data);
+      });
+    }
+    );
   }
   catch (e) {
     console.log("Error: ");
