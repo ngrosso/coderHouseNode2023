@@ -7,7 +7,7 @@ export class ProductController {
     this.initProductManagerFiles();
   }
 
-  async initProductManagerFiles(){
+  async initProductManagerFiles() {
     await productManager.init();
   }
 
@@ -33,10 +33,13 @@ export class ProductController {
 
   //TODO: Usar multer con el thumbnail si hay tiempo
   async addProduct(req, res) {
+    const socketio = req.app.get("socketio");
     const product = req.body;
     try {
       const newProduct = await productManager.addProduct(product);
+      const productList = await productManager.getProducts();
       res.status(201).json({ succcess: true, data: newProduct });
+      socketio.emit("products", productList);
     } catch (e) {
       res.status(400).json({ succcess: false, error: e.message });
     }
@@ -56,9 +59,12 @@ export class ProductController {
 
   async deleteProduct(req, res) {
     const id = +req.params.pid;
+    const socketio = req.app.get("socketio");
     try {
       const deletedProduct = await productManager.deleteProduct(id);
+      const productList = await productManager.getProducts();
       res.status(202).json({ succcess: true, data: deletedProduct });
+      socketio.emit("products", productList);
     } catch (e) {
       res.status(200).json({ succcess: false, error: e.message });
     }

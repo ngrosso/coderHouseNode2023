@@ -6,18 +6,18 @@ class Product {
   thumbnail = Array;
   code = Number;
   stock = Number;
-  category = String;
   status = Boolean;
+  category = String;
 
-  constructor(title, description, price, thumbnail, code, stock,category,status) {
+  constructor(title, description, price, thumbnail, code, stock,status,category) {
     this.title = title;
     this.description = description;
     this.price = price;
     this.thumbnail = thumbnail;
     this.code = code;
     this.stock = stock;
-    this.category = category;
     this.status = status;
+    this.category = category;
   }
 }
 

@@ -50,16 +50,20 @@ class ProductManager {
   }
 
   async addProduct(product) {
-    const { title, description, price, thumbnail, code, stock, status, category } = product;
+    let { title, description, price, thumbnail, code, stock, status, category } = product;
+    price = parseFloat(price);
+    stock = parseInt(stock);
+    thumbnail = JSON.parse(thumbnail);
+    status = status === "true" ? true : false;
     if (typeof (title) !== "string") throw new InvalidProductError("title")
     if (typeof (description) !== "string") throw new InvalidProductError("description")
     if (typeof (price) !== "number") throw new InvalidProductError("price")
     if (typeof (thumbnail) !== "object") throw new InvalidProductError("thumbnail")
     if (typeof (code) !== "string") throw new InvalidProductError("code")
     if (typeof (stock) !== "number") throw new InvalidProductError("stock");
-    if (typeof (status) !== "boolean") throw new InvalidProductError("status");
     if (typeof (category) !== "string") throw new InvalidProductError("category");
-    const productObject = new Product(product.title, product.description, product.price, product.thumbnail, product.code, product.stock, product.status, product.category);
+    if (typeof (status) !== "boolean") throw new InvalidProductError("status");
+    const productObject = new Product(title, description, price, thumbnail, code, stock, status, category);
     if (this.#products.find(p => p.code === productObject.code)) throw new RepeatedCodeError(product.code);
     productObject["id"] = this.#id++;
     this.#products.push(productObject);
