@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import ProductManager from "./ProductManager.js";
+import ProductDao from "../daos/fs/Product.dao.js";
 import Cart from "./Cart.js";
 import CartProduct from "./CartProduct.js";
 
@@ -8,10 +8,10 @@ class CartManager {
   #id = Number;
   #carts = Array;
   path = String;
-  productManager = new ProductManager();
+  ProductDao = new ProductDao();
 
   constructor() {
-    this.path = `${this.productManager.dir}carts.json`
+    this.path = `${this.ProductDao.dir}carts.json`
     this.#id = 1;
     this.#carts = [];
   }

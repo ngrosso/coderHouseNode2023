@@ -9,4 +9,4 @@ productsRouter.post("/", create);
 productsRouter.put("/:id", update);
 productsRouter.delete("/:id", remove);
 
-export default productsRouter
+export default productsRouter;
