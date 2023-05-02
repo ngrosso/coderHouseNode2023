@@ -2,20 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 const CartCollection = 'carts';
 
-const CartProductSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, ref: "products", index: true},
-  quantity: { type: Schema.Types.Number, required: true },
-})
-
 const CartSchema = new Schema({
-  products: { type: [CartProductSchema], required: true },
+  products: {
+    type: [{
+      _id: { type: Schema.Types.ObjectId, ref: "products", index: true },
+      quantity: { type: Schema.Types.Number, required: true },
+    }], required: true
+  },
 });
 
-CartProductSchema.pre('find', function () {
+CartSchema.pre('find', function () {
   this.populate(['products'])
 })
 
-CartProductSchema.pre('findOne', function () {
+CartSchema.pre('findOne', function () {
   this.populate(['products'])
 })
 
