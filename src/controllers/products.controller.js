@@ -1,70 +1,63 @@
-import ProductManager from "../utils/ProductManager.js"
+import ProductManager from "../managers/Product.manager.js";
 
-const productManager = new ProductManager();
-
-export class ProductController {
-  constructor() {
-    this.initProductManagerFiles();
-  }
-
-  async initProductManagerFiles(){
-    await productManager.init();
-  }
-
-  async getProducts(req, res) {
-    const limit = req.query.limit;
-    const productList = await productManager.getProducts();
-    if (limit) {
-      res.status(200).json({ success: true, data: productList.slice(0, limit) });
-    } else {
-      res.status(200).json({ success: true, data: productList });
-    }
-  }
-
-  async getProductById(req, res) {
-    const id = +req.params.pid;
-    try {
-      const product = await productManager.getProductById(id);
-      res.status(200).json({ succcess: true, data: product });
-    } catch (e) {
-      res.status(400).json({ success: false, error: e.message });
-    }
-  }
-
-  //TODO: Usar multer con el thumbnail si hay tiempo
-  async addProduct(req, res) {
-    const product = req.body;
-    try {
-      const newProduct = await productManager.addProduct(product);
-      res.status(201).json({ succcess: true, data: newProduct });
-    } catch (e) {
-      res.status(400).json({ succcess: false, error: e.message });
-    }
-  }
-
-  //TODO: Usar multer con el thumbnail si hay tiempo
-  async updateProduct(req, res) {
-    const id = +req.params.pid;
-    const product = req.body;
-    try {
-      const updatedProduct = await productManager.updateProduct(id, product);
-      res.status(202).json({ succcess: true, data: updatedProduct });
-    } catch (e) {
-      res.status(400).json({ succcess: false, error: e.message });
-    }
-  }
-
-  async deleteProduct(req, res) {
-    const id = +req.params.pid;
-    try {
-      const deletedProduct = await productManager.deleteProduct(id);
-      res.status(202).json({ succcess: true, data: deletedProduct });
-    } catch (e) {
-      res.status(200).json({ succcess: false, error: e.message });
-    }
-  }
-
+class ProductsContoller {
 }
 
+export const list = async (req, res) => {
+  const { limit } = req.query;
+  const manager = new ProductManager();
+  try {
+    const productList = await manager.list(limit);
+    res.status(200).json({ success: true, data: productList });
+  } catch (e) {
+    res.status(400).json({ success: false, error: e.message, details: e.stack });
+  }
 
-export default ProductController;
+};
+
+export const getOne = async (req, res) => {
+  const { id } = req.params;
+  const manager = new ProductManager();
+  try {
+    const product = await manager.getOne(id);
+    res.status(200).json({ succcess: true, data: product });
+  } catch (e) {
+    res.status(400).json({ success: false, error: e.message, details: e.stack });
+  }
+};
+
+export const create = async (req, res) => {
+  const product = req.body;
+  const manager = new ProductManager();
+  try {
+    const newProduct = await manager.create(product);
+    res.status(201).json({ succcess: true, data: newProduct });
+  } catch (e) {
+    res.status(400).json({ succcess: false, error: e.message, details: e.stack });
+  }
+};
+
+export const update = async (req, res) => {
+  const { id } = req.params;
+  const product = req.body;
+  const manager = new ProductManager();
+  try {
+    const result = await manager.update(id, product);
+    res.status(202).json({ succcess: true, data: result });
+  } catch (e) {
+    res.status(400).json({ succcess: false, error: e.message, details: e.stack });
+  }
+};
+
+export const remove = async (req, res) => {
+  const { id } = req.params;
+  const manager = new ProductManager();
+  try {
+    const result = await manager.remove(id);
+    res.status(200).json({ succcess: true, data: result });
+  } catch (e) {
+    res.status(400).json({ succcess: false, error: e.message, details: e.stack });
+  }
+};
+
+export default ProductsContoller;
