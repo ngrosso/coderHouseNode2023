@@ -38,10 +38,10 @@ export const create = async (req, res) => {
 
 export const insertProduct = async (req, res) => {
   const { cid, pid } = req.params;
-  const { cantidad } = req.body;
+  const { quantity } = req.body;
   const manager = new CartManager();
   try {
-    const cart = await manager.insertProduct(cid, pid, cantidad);
+    const cart = await manager.insertProduct(cid, pid, quantity);
     res.status(201).json({ success: true, data: cart });
   } catch (e) {
     res.status(400).json({ success: false, error: e.message });
@@ -53,6 +53,17 @@ export const removeProduct = async (req, res) => {
   const manager = new CartManager();
   try {
     const cart = await manager.removeProduct(cid, pid);
+    res.status(200).json({ success: true, data: cart });
+  } catch (e) {
+    res.status(400).json({ success: false, error: e.message });
+  }
+}
+
+export const removeCart = async (req, res) => {
+  const { cid } = req.params;
+  const manager = new CartManager();
+  try {
+    const cart = await manager.removeCart(cid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
     res.status(400).json({ success: false, error: e.message });

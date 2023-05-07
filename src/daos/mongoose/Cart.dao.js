@@ -9,28 +9,40 @@ class CartMongooseDao {
     return cartDocument.map(document => ({
       id: document._id,
       products: document.products.map(product => ({
-        id: product._id,
+        product: {
+          id: product._id._id,
+          title: product._id.title,
+          description: product._id.description,
+          price: product._id.price,
+          thumbnail: product._id.thumbnail,
+          code: product._id.code,
+          stock: product._id.stock,
+          category: product._id.category,
+          status: product._id.status
+        },
         quantity: product.quantity
       }))
     }));
   }
 
   async findOne(id) {
-    const cartDocument = await CartSchema.findOne({ _id: id }).populate('products._id');
+    const cartDocument = await CartSchema.findOne({ _id: id })
     if (!cartDocument) return null;
     if (!cartDocument.products) return { id: cartDocument._id, products: [] }
     return {
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
-        product: product._id,
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        thumbnail: product.thumbnail,
-        code: product.code,
-        stock: product.stock,
-        category: product.category,
-        status: product.status,
+        product: {
+          id: product._id._id,
+          title: product._id.title,
+          description: product._id.description,
+          price: product._id.price,
+          thumbnail: product._id.thumbnail,
+          code: product._id.code,
+          stock: product._id.stock,
+          category: product._id.category,
+          status: product._id.status
+        },
         quantity: product.quantity
       }))
     }
@@ -45,22 +57,24 @@ class CartMongooseDao {
     }
   }
 
-  async updateOne(cid, pid, quantity) {
+  async updateOne(cid, cart) {
 
-    await CartSchema.updateOne({ _id: cid }, { $push: { products: { _id: pid, quantity: quantity } } }, { new: true });
-    const foundDocument = await CartSchema.findOne({ _id: cid }).populate('products._id');
+    await CartSchema.updateOne({ _id: cid }, cart, { new: true });
+    const foundDocument = await CartSchema.findOne({ _id: cid })
     return {
       id: foundDocument._id,
       products: foundDocument.products.map(product => ({
-        product: product._id,
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        thumbnail: product.thumbnail,
-        code: product.code,
-        stock: product.stock,
-        category: product.category,
-        status: product.status,
+        product: {
+          id: product._id._id,
+          title: product._id.title,
+          description: product._id.description,
+          price: product._id.price,
+          thumbnail: product._id.thumbnail,
+          code: product._id.code,
+          stock: product._id.stock,
+          category: product._id.category,
+          status: product._id.status
+        },
         quantity: product.quantity
       }))
     }
@@ -73,15 +87,17 @@ class CartMongooseDao {
     return {
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
-        productId: product._id,
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        thumbnail: product.thumbnail,
-        code: product.code,
-        stock: product.stock,
-        category: product.category,
-        status: product.status,
+        product: {
+          id: product._id._id,
+          title: product._id.title,
+          description: product._id.description,
+          price: product._id.price,
+          thumbnail: product._id.thumbnail,
+          code: product._id.code,
+          stock: product._id.stock,
+          category: product._id.category,
+          status: product._id.status
+        },
         quantity: product.quantity
       }))
     }
@@ -92,14 +108,23 @@ class CartMongooseDao {
   }
 
   async removeProduct(cid, pid) {
-    const cartDocument = await CartSchema.findOne({ _id: cid }).populate('products._id');
-    cartDocument.products = cartDocument.products.filter(product => product._id != pid);
+    const cartDocument = await CartSchema.findOne({ _id: cid })
+    cartDocument.products = cartDocument.products.filter(p => p._id._id != pid);;
     await cartDocument.save();
-
     return {
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
-        id: product._id,
+        product: {
+          id: product._id._id,
+          title: product._id.title,
+          description: product._id.description,
+          price: product._id.price,
+          thumbnail: product._id.thumbnail,
+          code: product._id.code,
+          stock: product._id.stock,
+          category: product._id.category,
+          status: product._id.status
+        },
         quantity: product.quantity
       }))
     }
