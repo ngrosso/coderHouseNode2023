@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { list, getOne, create, insertProduct, removeProduct, removeCart } from "../controllers/carts.controller.js";
+import { list, findOne, create, insertProduct, removeProduct, removeCart } from "../controllers/carts.controller.js";
 
 const cartRouter = Router();
 
 cartRouter.post("/", create);
-cartRouter.get("/:cid", getOne);
+cartRouter.get("/:cid", findOne);
 cartRouter.get("/", list); // FIXME:Solo para pruebas internas y pruebas del tutor
 cartRouter.post("/:cid/product/:pid", insertProduct);
 cartRouter.delete("/:cid/product/:pid", removeProduct);

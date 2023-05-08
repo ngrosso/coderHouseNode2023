@@ -15,11 +15,11 @@ export const list = async (req, res) => {
   }
 }
 
-export const getOne = async (req, res) => {
+export const findOne = async (req, res) => {
   const { cid } = req.params;
   const manager = new CartManager();
   try {
-    const cart = await manager.getOne(cid);
+    const cart = await manager.findOne(cid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
     res.status(400).json({ success: false, error: e.message });

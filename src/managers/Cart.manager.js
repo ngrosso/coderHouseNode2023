@@ -16,7 +16,7 @@ class CartManager {
     return this.cartDao.find();
   }
 
-  async getOne(id) {
+  async findOne(id) {
     const cart = await this.cartDao.findOne(id);
     if (!cart) throw new CartDoesntExistError(id);
     return cart;
