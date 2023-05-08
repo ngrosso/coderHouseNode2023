@@ -1,5 +1,4 @@
 import CartSchema from '../../models/Cart.model.js';
-import ProductSchema from '../../models/Product.model.js';
 
 class CartMongooseDao {
 
@@ -9,43 +8,58 @@ class CartMongooseDao {
     return cartDocument.map(document => ({
       id: document._id,
       products: document.products.map(product => ({
+        quantity: product.quantity,
         product: {
-          id: product._id._id,
-          title: product._id.title,
-          description: product._id.description,
-          price: product._id.price,
-          thumbnail: product._id.thumbnail,
-          code: product._id.code,
-          stock: product._id.stock,
-          category: product._id.category,
-          status: product._id.status
+          id: product.product._id,
+          title: product.product.title,
+          description: product.product.description,
+          price: product.product.price,
+          thumbnail: product.product.thumbnail,
+          code: product.product.code,
+          stock: product.product.stock,
+          category: product.product.category,
+          status: product.product.status
         },
-        quantity: product.quantity
       }))
     }));
   }
 
   async findOne(id) {
     const cartDocument = await CartSchema.findOne({ _id: id })
+
     if (!cartDocument) return null;
-    if (!cartDocument.products) return { id: cartDocument._id, products: [] }
+
     return {
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
+        quantity: product.quantity,
         product: {
-          id: product._id._id,
-          title: product._id.title,
-          description: product._id.description,
-          price: product._id.price,
-          thumbnail: product._id.thumbnail,
-          code: product._id.code,
-          stock: product._id.stock,
-          category: product._id.category,
-          status: product._id.status
+          id: product.product._id,
+          title: product.product.title,
+          description: product.product.description,
+          price: product.product.price,
+          thumbnail: product.product.thumbnail,
+          code: product.product.code,
+          stock: product.product.stock,
+          category: product.product.category,
+          status: product.product.status
         },
-        quantity: product.quantity
       }))
-    }
+    };
+  }
+
+  async getOne(id) {
+    const cartDocument = await CartSchema.findOne({ _id: id });
+
+    if (!cartDocument) return null;
+
+    return {
+      id: cartDocument._id,
+      products: cartDocument.products.map(product => ({
+        quantity: product.quantity,
+        product: product.product._id
+      }))
+    };
   }
 
   async create() {
@@ -58,74 +72,64 @@ class CartMongooseDao {
   }
 
   async updateOne(cid, cart) {
-
-    await CartSchema.updateOne({ _id: cid }, cart, { new: true });
-    const foundDocument = await CartSchema.findOne({ _id: cid })
-    return {
-      id: foundDocument._id,
-      products: foundDocument.products.map(product => ({
-        product: {
-          id: product._id._id,
-          title: product._id.title,
-          description: product._id.description,
-          price: product._id.price,
-          thumbnail: product._id.thumbnail,
-          code: product._id.code,
-          stock: product._id.stock,
-          category: product._id.category,
-          status: product._id.status
-        },
-        quantity: product.quantity
-      }))
-    }
-  }
-
-  async updateOneQty(cid, pid, quantity) {
-
-    const cartDocument = await CartSchema.updateOne({ _id: cid, "products._id": pid }, { $inc: { "products.$.quantity": quantity } });
+    const updatedCart = await CartSchema.findOneAndUpdate({ _id: cid }, cart, { new: true }).populate([{
+      path: 'products',
+      populate: {
+        path: 'product',
+        model: 'products'
+      }
+    }]);
 
     return {
-      id: cartDocument._id,
-      products: cartDocument.products.map(product => ({
+      id: updatedCart._id,
+      products: updatedCart.products.map(product => ({
+        quantity: product.quantity,
         product: {
-          id: product._id._id,
-          title: product._id.title,
-          description: product._id.description,
-          price: product._id.price,
-          thumbnail: product._id.thumbnail,
-          code: product._id.code,
-          stock: product._id.stock,
-          category: product._id.category,
-          status: product._id.status
+          id: product.product._id,
+          title: product.product.title,
+          description: product.product.description,
+          price: product.product.price,
+          thumbnail: product.product.thumbnail,
+          code: product.product.code,
+          stock: product.product.stock,
+          category: product.product.category,
+          status: product.product.status
         },
-        quantity: product.quantity
       }))
-    }
+    };
   }
 
   async remove(id) {
-    return CartSchema.deleteOne({ _id: id });
+    const cartDocument = await CartSchema.findOne({ _id: id })
+    cartDocument.products = [];
+    await cartDocument.save();
+
+    return {
+      id: cartDocument._id,
+      products: cartDocument.products
+    }
   }
 
   async removeProduct(cid, pid) {
     const cartDocument = await CartSchema.findOne({ _id: cid })
-    cartDocument.products = cartDocument.products.filter(p => p._id._id != pid);;
+    cartDocument.products = cartDocument.products.filter(p => p.product._id != pid);
     await cartDocument.save();
+
     return {
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
+        quantity: product.quantity,
         product: {
-          id: product._id._id,
-          title: product._id.title,
-          description: product._id.description,
-          price: product._id.price,
-          thumbnail: product._id.thumbnail,
-          code: product._id.code,
-          stock: product._id.stock,
-          category: product._id.category,
-          status: product._id.status
+          id: product.product._id,
+          title: product.product.title,
+          description: product.product.description,
+          price: product.product.price,
+          thumbnail: product.product.thumbnail,
+          code: product.product.code,
+          stock: product.product.stock,
+          category: product.product.category,
+          status: product.product.status
         },
-        quantity: product.quantity
       }))
     }
   }

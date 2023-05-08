@@ -27,21 +27,20 @@ class CartManager {
   }
 
   async insertProduct(cid, pid, quantity) {
-    try { quantity = parseInt(quantity) } catch (e) { throw new FormatError("Quantity") }
-    const cart = await this.cartDao.findOne(cid);
+    const cart = await this.cartDao.getOne(cid);
     const product = await this.productDao.findOne(pid);
     if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
-    const productsInCart = cart.products.map(p => ({ _id: p.product.id.toString(), quantity: p.quantity }));
-    const foundProduct = productsInCart.filter(p => p._id == pid);
-    if (foundProduct.length > 0) {
-      const index = productsInCart.indexOf(foundProduct[0]);
-      productsInCart[index].quantity += parseInt(quantity);
+    let cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
+    if (cartProduct) {
+      cartProduct.quantity += quantity;
     } else {
-      productsInCart.push({ _id: pid.toString(), quantity: quantity })
+      cart.products.push({
+        quantity,
+        product: product.id
+      });
     }
-    cart.products = productsInCart;
-    return await this.cartDao.updateOne(cid, cart)
+    return await this.cartDao.updateOne(cid, cart);
   }
 
   async removeProduct(cid, pid) {

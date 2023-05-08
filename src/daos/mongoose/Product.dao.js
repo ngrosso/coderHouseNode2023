@@ -2,20 +2,27 @@ import ProductSchema from "../../models/Product.model.js";
 
 class ProductMongooseDao {
 
-  async find(limit) {
-    const productDocument = await ProductSchema.find({ status: true }).limit(limit);
+  async find(params) {
+    const { query, page, limit, sort } = params;
+    console.log(params);
+    
+    const productsDocument = await ProductSchema.paginate({ $and: [{ status: true }, query] }, { page, sort: { price: sort }, limit });
+    const { docs, ...rest } = productsDocument;
 
-    return productDocument.map(document => ({
-      id: document._id,
-      title: document.title,
-      description: document.description,
-      price: document.price,
-      thumbnail: document.thumbnail,
-      code: document.code,
-      stock: document.stock,
-      category: document.category,
-      status: document.status
-    }));
+    return {
+      payload: docs.map((document) => ({
+        id: document._id,
+        title: document.title,
+        description: document.description,
+        price: document.price,
+        thumbnail: document.thumbnail,
+        code: document.code,
+        stock: document.stock,
+        category: document.category,
+        status: document.status
+      })),
+      ...rest
+    };
   }
 
   async findOne(id) {

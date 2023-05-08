@@ -4,10 +4,10 @@ class ProductsContoller {
 }
 
 export const list = async (req, res) => {
-  const { limit } = req.query;
+  const params = req.query;
   const manager = new ProductManager();
   try {
-    const productList = await manager.list(limit);
+    const productList = await manager.list(params);
     res.status(200).json({ success: true, data: productList });
   } catch (e) {
     res.status(400).json({ success: false, error: e.message });
