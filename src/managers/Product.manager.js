@@ -1,5 +1,5 @@
 import ProductMongooseDao from '../daos/mongoose/Product.dao.js';
-import ProductFsDao from '../daos/fs/Product.dao.js';
+//import ProductFsDao from '../daos/fs/Product.dao.js';
 
 
 class ProductManager {
@@ -8,7 +8,7 @@ class ProductManager {
     if (process.env.PERSISTANCE_TYPE == 1) {
       this.productDao = new ProductMongooseDao();
     } else {
-      this.productDao = new ProductFsDao();
+      //this.productDao = new ProductFsDao();
     }
   }
 
@@ -16,8 +16,14 @@ class ProductManager {
     const limit = params.limit ? parseInt(params.limit) : 100;
     const page = params.page ? parseInt(params.page) : 1;
     const sort = params.sort === "asc" || params.sort === "desc" ? params.sort : 1;
-
-    const query = params.query ? params.query : {};
+    const query = {};
+    if (params.query) {
+      const queries = params.query.split(";");
+      queries.forEach(q => {
+        const [key, value] = q.split("=");
+        query[key] = value;
+      });
+    }
     const optionsParams = { query: query, sort: sort, page: page, limit: limit };
     return this.productDao.find(optionsParams);
   }

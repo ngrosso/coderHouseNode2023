@@ -31,7 +31,7 @@ class CartManager {
     const product = await this.productDao.findOne(pid);
     if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
-    let cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
+    const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
     if (cartProduct) {
       cartProduct.quantity += quantity;
     } else {
@@ -40,6 +40,35 @@ class CartManager {
         product: product.id
       });
     }
+    return await this.cartDao.updateOne(cid, cart);
+  }
+
+  async updateCart(cid, products) {
+    const cart = await this.cartDao.findOne(cid);
+    if (!cart) throw new CartDoesntExistError(cid);
+    cart.products = [];
+    await products.forEach(async product => {
+      const productInDb = await this.productDao.findOne(product.product.id);
+      if (!productInDb) throw new ProductDoesntExistError(product.produdct.id);
+    })
+    for (const product of products) {
+      const productInDb = await this.productDao.findOne(product.product.id);
+      cart.products.push({
+        quantity: product.quantity,
+        product: productInDb.id
+      });
+    }
+    return await this.cartDao.updateOne(cid, cart);
+  }
+
+  async updateProduct(cid, pid, quantity) {
+    const cart = await this.cartDao.getOne(cid);
+    const product = await this.productDao.findOne(pid);
+    if (!cart) throw new CartDoesntExistError(cid);
+    if (!product) throw new ProductDoesntExistError(pid);
+    const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
+    if (!cartProduct) throw new ProductDoesntExistError(`${pid} in cart: ${cid}`);
+    cartProduct.quantity = quantity;
     return await this.cartDao.updateOne(cid, cart);
   }
 
