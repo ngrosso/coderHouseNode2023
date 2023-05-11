@@ -5,7 +5,7 @@ class ProductMongooseDao {
   async find(params) {
     const { query, page, limit, sort } = params;
     console.log(params);
-    
+
     const productsDocument = await ProductSchema.paginate({ $and: [{ status: true }, query] }, { page, sort: { price: sort }, limit });
     const { docs, ...rest } = productsDocument;
 
@@ -28,7 +28,7 @@ class ProductMongooseDao {
   async findOne(id) {
     const productDocument = await ProductSchema.findOne({ _id: id, status: true });
 
-    if (!productDocument) return null;
+    if (!productDocument) throw new ProductDoesntExistError(id);
     return {
       id: productDocument._id,
       title: productDocument.title,
@@ -83,6 +83,7 @@ class ProductMongooseDao {
     const productDocument = await ProductSchema.findOne({ code: code, status: true });
 
     if (!productDocument) return null;
+    
     return {
       id: productDocument._id,
       title: productDocument.title,
@@ -99,7 +100,7 @@ class ProductMongooseDao {
   async findOneSpecial(id) {
     const productDocument = await ProductSchema.findOne({ _id: id });
 
-    if (!productDocument) return null;
+    if (!productDocument) throw new ProductDoesntExistError(id);
     return {
       id: productDocument._id,
       title: productDocument.title,
@@ -111,6 +112,18 @@ class ProductMongooseDao {
       category: productDocument.category,
       status: productDocument.status
     }
+  }
+}
+
+class ProductDoesntExistError extends Error {
+  constructor(id) {
+    super(`Product Id:${id} Not Found!`);
+  }
+}
+
+class ProductCodeDoesntExistError extends Error {
+  constructor(code) {
+    super(`Product Code:${code} Not Found!`);
   }
 }
 

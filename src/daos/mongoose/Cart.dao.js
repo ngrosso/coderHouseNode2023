@@ -27,7 +27,7 @@ class CartMongooseDao {
   async findOne(id) {
     const cartDocument = await CartSchema.findOne({ _id: id })
 
-    if (!cartDocument) return null;
+    if (!cartDocument) throw new CartDoesntExistError(id);
 
     return {
       id: cartDocument._id,
@@ -51,7 +51,7 @@ class CartMongooseDao {
   async getOne(id) {
     const cartDocument = await CartSchema.findOne({ _id: id });
 
-    if (!cartDocument) return null;
+    if (!cartDocument) throw new CartDoesntExistError(id);
 
     return {
       id: cartDocument._id,
@@ -132,6 +132,12 @@ class CartMongooseDao {
         },
       }))
     }
+  }
+}
+
+class CartDoesntExistError extends Error {
+  constructor(id) {
+    super(`Cart Id:${id} Not Found!`);
   }
 }
 
