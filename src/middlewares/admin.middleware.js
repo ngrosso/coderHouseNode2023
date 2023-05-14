@@ -6,7 +6,7 @@ const auth = (req, res, next) =>
      return next()
    }
 
-   return res.status(401).send({ message: 'Error de autorización!'})
+   return res.status(403).send({ message: 'Error de privilegios!'})
 }
 
 export default auth;
