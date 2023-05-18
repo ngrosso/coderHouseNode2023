@@ -1,4 +1,4 @@
-import CartSchema from '../../models/Cart.model.js';
+import CartSchema from '../../models/cart.model.js';
 
 class CartMongooseDao {
 

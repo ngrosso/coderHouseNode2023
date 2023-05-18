@@ -2,9 +2,9 @@
   "name": "proyecto-final-coderhouse",
   "version": "0.0.1",
   "description": "Proyecto final de backend, API de ecommerce",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=test node ./src/app.js",
+    "start": "NODE_ENV=test node ./src/index.js",
     "dev": "nodemon"
   },
   "type": "module",

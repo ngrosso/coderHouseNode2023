@@ -7,7 +7,7 @@
   "watch": [
     "src/*"
   ],
-  "exec": "NODE_ENV=dev node src/app.js --trace-warnings",
+  "exec": "NODE_ENV=dev node src/index.js --trace-warnings",
   "legacyWatch": true,
   "ext": "js, handlebars,css"
 }

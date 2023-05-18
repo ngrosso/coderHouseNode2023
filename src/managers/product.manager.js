@@ -1,4 +1,4 @@
-import ProductMongooseDao from '../daos/mongoose/Product.dao.js';
+import ProductMongooseDao from '../daos/mongoose/product.dao.js';
 //import ProductFsDao from '../daos/fs/Product.dao.js';
 
 

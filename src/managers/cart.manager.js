@@ -1,5 +1,5 @@
-import CartMongooseDao from "../daos/mongoose/Cart.dao.js";
-import ProductMongooseDao from "../daos/mongoose/Product.dao.js";
+import CartMongooseDao from "../daos/mongoose/cart.dao.js";
+import ProductMongooseDao from "../daos/mongoose/product.dao.js";
 //import CartFsDao from "../daos/fs/Cart.dao";
 
 class CartManager {
