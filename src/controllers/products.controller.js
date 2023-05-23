@@ -1,4 +1,4 @@
-import ProductManager from "../managers/Product.manager.js";
+import ProductManager from "../managers/product.manager.js";
 
 class ProductsContoller {
 }

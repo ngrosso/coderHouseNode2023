@@ -1,5 +1,5 @@
-import UserManager from "../managers/User.manager.js";
-import { createHash, isValidPassword } from "../utils/authCrypt.js";
+import UserManager from "../managers/user.manager.js";
+import { createHash, isValidPassword } from "../utils/auth.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -26,6 +26,9 @@ export const login = async (req, res) => {
       return res.status(200).send({ success: true, message: 'Admin Login success!' });
     }
 
+    const accessToken = await generateToken(user);
+
+    res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }).send({ message: 'Login success!' });
     res.status(200).send({ success: true, message: 'User Login success!' });
   } catch (e) {
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e })
