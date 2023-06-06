@@ -1,5 +1,6 @@
 import CartMongooseDao from "../daos/mongoose/cart.dao.js";
 import ProductMongooseDao from "../daos/mongoose/product.dao.js";
+import UserMongooseDao from "../daos/mongoose/user.dao.js";
 //import CartFsDao from "../daos/fs/Cart.dao";
 
 class CartManager {
@@ -7,6 +8,7 @@ class CartManager {
     if (process.env.PERSISTANCE_TYPE == 1) {
       this.cartDao = new CartMongooseDao();
       this.productDao = new ProductMongooseDao();
+      this.userDao = new UserMongooseDao();
     } else {
       //this.cartDao = new CartFsDao();
     }
@@ -16,14 +18,19 @@ class CartManager {
     return this.cartDao.find();
   }
 
-  async findOne(id) {
-    const cart = await this.cartDao.findOne(id);
-    if (!cart) throw new CartDoesntExistError(id);
+  async findOne(cid) {
+    const cart = await this.cartDao.findOne(cid);
+    if (!cart) throw new CartDoesntExistError(cid);
     return cart;
   }
 
-  async create() {
-    return this.cartDao.create();
+  async create(uid) {
+    const user = await this.userDao.getOne(uid);
+    if(user.cart) throw new Error(`User ${uid} already has Cart ${user.cart}`);
+    const cart = await this.cartDao.create();
+    if (!cart) throw new Error("Cart coudln't be created");
+    await this.userDao.addCart(uid,cart.id);
+    return cart;
   }
 
   async insertProduct(cid, pid, quantity) {
@@ -79,23 +86,24 @@ class CartManager {
     return await this.cartDao.removeProduct(cid, pid);
   }
 
-  async removeCart(id) {
-    const cart = await this.cartDao.findOne(id);
-    if (!cart) throw new CartDoesntExistError(id);
-    await this.cartDao.remove(id);
+  async removeCart(uid,cid) {
+    const cart = await this.cartDao.findOne(cid);
+    if (!cart) throw new CartDoesntExistError(cid);
+    await this.UserMongooseDao.removeCart(uid,cid);
+    await this.cartDao.remove(cid);
     return cart;
   }
 }
 
 class CartDoesntExistError extends Error {
-  constructor(id) {
-    super(`Cart Id:${id} Not Found!`);
+  constructor(cid) {
+    super(`Cart Id:${cid} Not Found!`);
   }
 }
 
 class ProductDoesntExistError extends Error {
-  constructor(id) {
-    super(`Product Id:${id} Not Found!`);
+  constructor(cid) {
+    super(`Product Id:${cid} Not Found!`);
   }
 }
 

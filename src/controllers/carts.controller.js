@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import CartManager from "../managers/cart.manager.js";
 
 
@@ -5,9 +6,12 @@ export class CartController {
 }
 
 export const create = async (req, res) => {
+  //access jwt as cookir and decode user id
+  const token = req.cookies.accessToken;
+  const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
   const manager = new CartManager();
   try {
-    const newCart = await manager.create();
+    const newCart = await manager.create(decoded.user.id);
     res.status(201).json({ success: true, data: newCart });
   } catch (e) {
     console.log(e);

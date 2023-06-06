@@ -18,12 +18,17 @@ class UserMongooseDao {
     const userDocument = await userSchema.findOne({ _id: id });
 
     if (!userDocument) {
-      throw new Error('User dont exist.');
+      throw new Error("user doesn't exist.");
     }
 
     return {
       id: userDocument?._id,
+      firstName: userDocument?.firstName,
+      lastName: userDocument?.lastName,
       email: userDocument?.email,
+      age: userDocument?.age,
+      cart: userDocument?.cart,
+      role: userDocument?.role,
       password: userDocument?.password
     }
   }
@@ -44,8 +49,12 @@ class UserMongooseDao {
 
     return {
       id: userDocument._id,
+      firstName: userDocument.firstName,
+      lastName: userDocument.lastName,
       email: userDocument.email,
-      password: userDocument.password,
+      age: userDocument.age,
+      cart: userDocument.cart,
+      role: userDocument.role
     }
   }
 
@@ -53,17 +62,38 @@ class UserMongooseDao {
     const userDocument = await userSchema.findOneAndUpdate({ _id: id }, data, { new: true });
 
     if (!userDocument) {
-      throw new Error('User dont exist.');
+      throw new Error("User doesn't exist.");
     }
 
     return {
       id: userDocument._id,
+      firstName: userDocument.firstName,
+      lastName: userDocument.lastName,
       email: userDocument.email,
+      age: userDocument.age,
+      role: userDocument.role,
+      cart: userDocument.cart
     }
   }
 
   async deleteOne(id) {
     return userSchema.deleteOne({ _id: id });
+  }
+
+  async addCart(id, cartId) {
+    const userDocument = await userSchema.findOne({ _id: id });
+    if (!userDocument) throw new Error("user doesn't exist.");
+    userDocument.cart = cartId;
+    return userDocument.save();
+  }
+
+  async removeCart(id, cartId) {
+    const userDocument = await userSchema.findOne({ _id: id });
+    if (!userDocument) {
+      throw new Error("user doesn't exist.");
+    }
+    userDocument.cart = null;
+    return userDocument.save();
   }
 }
 

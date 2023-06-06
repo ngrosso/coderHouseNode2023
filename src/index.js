@@ -34,16 +34,6 @@ void (async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-  app.use(session({
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_ATLAS_URI,
-      dbName: process.env.MONGO_DB_NAME,
-      ttl: 600
-    }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-  }));
 
   app.use('/api/sessions',sessionRouter);
   app.use('/api/users', usersRoute);

@@ -4,9 +4,13 @@ import paginate from "mongoose-paginate-v2";
 const userCollection = 'users';
 
 const UserSchema = new Schema({
+  firstName: {type:Schema.Types.String},
+  lastName: {type:Schema.Types.String},
   email: { type: Schema.Types.String, unique: true, required: true },
+  age: { type: Schema.Types.Number },
+  password: { type: Schema.Types.String },
+  cart: { type: Schema.Types.ObjectId, ref: "carts" },
   admin: { type: Schema.Types.Boolean, default: false },
-  password: { type: Schema.Types.String }
 });
 
 UserSchema.plugin(paginate);
