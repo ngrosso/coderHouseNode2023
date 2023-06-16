@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import auth from "../middlewares/auth.middleware.js";
-import { forgetPassword, login, logout, signup } from "../controllers/session.controller.js";
+import { forgetPassword, login, logout, signup } from "../../presentation/controllers/session.controller.js";
 
 const sessionRouter = Router();
 

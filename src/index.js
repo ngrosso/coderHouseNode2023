@@ -1,25 +1,22 @@
-import dotenv from "dotenv";
-dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 import express from "express";
-import session from "express-session";
 import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 
-import productsRouter from "./routes/products.route.js";
-import cartRouter from "./routes/carts.route.js";
-import sessionRouter from "./routes/session.route.js";
-import usersRoute from "./routes/user.route.js";
+import productsRouter from "./presentation/routes/products.route.js";
+import cartRouter from "./presentation/routes/carts.route.js";
+import sessionRouter from "./presentation/routes/session.route.js";
+import usersRoute from "./presentation/routes/user.route.js";
 
+import config from "./config/index.js";
 
 void (async () => {
-  const PORT = process.env.PORT || 8080;
+  const PORT = config.port || 8080;
 
-  if (Number(process.env.PERSISTANCE_TYPE)) {
+  if (Number(config.persistanceType)) {
     try {
-      await mongoose.connect(process.env.MONGO_ATLAS_URI, {
-        dbName: process.env.MONGO_DB_NAME,
+      await mongoose.connect(config.mongoAtlasUri, {
+        dbName: config.mongoDBName,
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
@@ -35,7 +32,7 @@ void (async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  app.use('/api/sessions',sessionRouter);
+  app.use('/api/sessions', sessionRouter);
   app.use('/api/users', usersRoute);
   app.use("/api/products", productsRouter);
   app.use("/api/carts", cartRouter);

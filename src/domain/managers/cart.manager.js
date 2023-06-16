@@ -1,11 +1,12 @@
-import CartMongooseDao from "../daos/mongoose/cart.dao.js";
-import ProductMongooseDao from "../daos/mongoose/product.dao.js";
-import UserMongooseDao from "../daos/mongoose/user.dao.js";
+import CartMongooseDao from "../../data/daos/mongoose/cart.dao.js";
+import ProductMongooseDao from "../../data/daos/mongoose/product.dao.js";
+import UserMongooseDao from "../../data/daos/mongoose/user.dao.js";
+import config from "../../config/index.js";
 //import CartFsDao from "../daos/fs/Cart.dao";
 
 class CartManager {
   constructor() {
-    if (process.env.PERSISTANCE_TYPE == 1) {
+    if (config.persistanceType == 1) {
       this.cartDao = new CartMongooseDao();
       this.productDao = new ProductMongooseDao();
       this.userDao = new UserMongooseDao();
@@ -26,10 +27,10 @@ class CartManager {
 
   async create(uid) {
     const user = await this.userDao.getOne(uid);
-    if(user.cart) throw new Error(`User ${uid} already has Cart ${user.cart}`);
+    if (user.cart) throw new Error(`User ${uid} already has Cart ${user.cart}`);
     const cart = await this.cartDao.create();
     if (!cart) throw new Error("Cart coudln't be created");
-    await this.userDao.addCart(uid,cart.id);
+    await this.userDao.addCart(uid, cart.id);
     return cart;
   }
 
@@ -86,10 +87,10 @@ class CartManager {
     return await this.cartDao.removeProduct(cid, pid);
   }
 
-  async removeCart(uid,cid) {
+  async removeCart(uid, cid) {
     const cart = await this.cartDao.findOne(cid);
     if (!cart) throw new CartDoesntExistError(cid);
-    await this.UserMongooseDao.removeCart(uid,cid);
+    await this.UserMongooseDao.removeCart(uid, cid);
     await this.cartDao.remove(cid);
     return cart;
   }

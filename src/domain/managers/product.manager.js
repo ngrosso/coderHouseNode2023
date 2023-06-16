@@ -1,11 +1,12 @@
-import ProductMongooseDao from '../daos/mongoose/product.dao.js';
+import ProductMongooseDao from '../../data/daos/mongoose/product.dao.js';
+import config from '../../config/index.js';
 //import ProductFsDao from '../daos/fs/Product.dao.js';
 
 
 class ProductManager {
 
   constructor() {
-    if (process.env.PERSISTANCE_TYPE == 1) {
+    if (config.persistanceType == 1) {
       this.productDao = new ProductMongooseDao();
     } else {
       //this.productDao = new ProductFsDao();
@@ -29,7 +30,7 @@ class ProductManager {
   }
 
   async getOne(id) {
-   return await this.productDao.findOne(id);
+    return await this.productDao.findOne(id);
   }
 
   async create(product) {

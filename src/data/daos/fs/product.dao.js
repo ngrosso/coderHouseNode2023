@@ -9,7 +9,7 @@ class ProductFSDao {
   dir = String;
 
   constructor() {
-    this.dir = "./src/utils/files/"
+    this.dir = "./src/shared/files/"
     this.path = `${this.dir}products.json`
     this.#id = 1;
     this.#products = [];

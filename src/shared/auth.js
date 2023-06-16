@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import config from '../config/index.js';
 
 export const createHash = async (password) => {
   return await bcrypt.hash(password, 10)
@@ -10,5 +11,5 @@ export const isValidPassword = async (password, passwordHash) => {
 }
 
 export const generateToken = async (user) => {
-  return await jwt.sign({ user: { ...user, password: undefined } }, process.env.PRIVATE_KEY, { expiresIn: '60m' });
+  return await jwt.sign({ user: { ...user, password: undefined } }, config.jwtPrivateKey, { expiresIn: '60m' });
 }

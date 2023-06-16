@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import config from "../../config/index.js";
 
 const roleAuth = (req, res, next) => {
   const authHeader = req.headers.authorization ?? `Bearer ${req.cookies.accessToken}`;
@@ -8,7 +9,7 @@ const roleAuth = (req, res, next) => {
 
   const token = authHeader.split(' ')[1]; // Bearer tokenString
 
-  jwt.verify(token, process.env.PRIVATE_KEY, (error, credentials) => {
+  jwt.verify(token, config.jwtPrivateKey, (error, credentials) => {
     if (error || !credentials.user.admin) return res.status(403).send({ error: 'Admin Authentication error' });
 
     req.email = credentials.email;
