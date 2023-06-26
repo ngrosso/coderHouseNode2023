@@ -1,11 +1,12 @@
 import CartSchema from '../../models/cart.model.js';
+import Cart from '../../../domain/entities/cart.js';
 
-class CartMongooseDao {
+class CartMongooseRepository {
 
   async find() {
     const cartDocument = await CartSchema.find();
 
-    return cartDocument.map(document => ({
+    return cartDocument.map(document => new Cart({
       id: document._id,
       products: document.products.map(product => ({
         quantity: product.quantity,
@@ -29,7 +30,7 @@ class CartMongooseDao {
 
     if (!cartDocument) throw new CartDoesntExistError(id);
 
-    return {
+    return new Cart({
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
         quantity: product.quantity,
@@ -45,7 +46,7 @@ class CartMongooseDao {
           status: product.product.status
         },
       }))
-    };
+    });
   }
 
   async getOne(id) {
@@ -53,22 +54,22 @@ class CartMongooseDao {
 
     if (!cartDocument) throw new CartDoesntExistError(id);
 
-    return {
+    return new Cart({
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
         quantity: product.quantity,
         product: product.product._id
       }))
-    };
+    });
   }
 
   async create() {
     const cartDocument = await CartSchema.create({ products: [] });
 
-    return {
+    return new Cart({
       id: cartDocument._id,
       products: cartDocument.products
-    }
+    })
   }
 
   async updateOne(cid, cart) {
@@ -80,7 +81,7 @@ class CartMongooseDao {
       }
     }]);
 
-    return {
+    return new Cart({
       id: updatedCart._id,
       products: updatedCart.products.map(product => ({
         quantity: product.quantity,
@@ -96,7 +97,7 @@ class CartMongooseDao {
           status: product.product.status
         },
       }))
-    };
+    });
   }
 
   async remove(id) {
@@ -115,7 +116,7 @@ class CartMongooseDao {
     cartDocument.products = cartDocument.products.filter(p => p.product._id != pid);
     await cartDocument.save();
 
-    return {
+    return new Cart({
       id: cartDocument._id,
       products: cartDocument.products.map(product => ({
         quantity: product.quantity,
@@ -131,7 +132,7 @@ class CartMongooseDao {
           status: product.product.status
         },
       }))
-    }
+    });
   }
 }
 
@@ -141,4 +142,4 @@ class CartDoesntExistError extends Error {
   }
 }
 
-export default CartMongooseDao;
+export default CartMongooseRepository;

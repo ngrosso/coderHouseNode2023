@@ -1,6 +1,7 @@
 import ProductSchema from "../../models/product.model.js";
+import Product from "../../../domain/entities/product.js";
 
-class ProductMongooseDao {
+class ProductMongooseRepository {
 
   async find(params) {
     const { query, page, limit, sort } = params;
@@ -10,7 +11,7 @@ class ProductMongooseDao {
     const { docs, ...rest } = productsDocument;
 
     return {
-      payload: docs.map((document) => ({
+      payload: docs.map((document) => new Product({
         id: document._id,
         title: document.title,
         description: document.description,
@@ -29,7 +30,7 @@ class ProductMongooseDao {
     const productDocument = await ProductSchema.findOne({ _id: id, status: true });
 
     if (!productDocument) throw new ProductDoesntExistError(id);
-    return {
+    return new Product({
       id: productDocument._id,
       title: productDocument.title,
       description: productDocument.description,
@@ -39,13 +40,13 @@ class ProductMongooseDao {
       stock: productDocument.stock,
       category: productDocument.category,
       status: productDocument.status
-    }
+    })
   }
 
   async create(product) {
     const productDocument = await ProductSchema.create(product);
 
-    return {
+    return new Product({
       id: productDocument._id,
       title: productDocument.title,
       description: productDocument.description,
@@ -55,14 +56,14 @@ class ProductMongooseDao {
       stock: productDocument.stock,
       category: productDocument.category,
       status: productDocument.status
-    }
+    })
   }
 
   async update(id, product) {
     const productDocument = await ProductSchema.updateOne({ _id: id }, product);
 
 
-    return {
+    return new Product({
       id: productDocument._id,
       title: productDocument.title,
       description: productDocument.description,
@@ -72,7 +73,7 @@ class ProductMongooseDao {
       stock: productDocument.stock,
       category: productDocument.category,
       status: productDocument.status
-    }
+    })
   }
 
   async remove(id) {
@@ -83,8 +84,8 @@ class ProductMongooseDao {
     const productDocument = await ProductSchema.findOne({ code: code, status: true });
 
     if (!productDocument) return null;
-    
-    return {
+
+    return new Product({
       id: productDocument._id,
       title: productDocument.title,
       description: productDocument.description,
@@ -94,14 +95,14 @@ class ProductMongooseDao {
       stock: productDocument.stock,
       category: productDocument.category,
       status: productDocument.status
-    }
+    })
   }
 
   async findOneSpecial(id) {
     const productDocument = await ProductSchema.findOne({ _id: id });
 
     if (!productDocument) throw new ProductDoesntExistError(id);
-    return {
+    return new Product({
       id: productDocument._id,
       title: productDocument.title,
       description: productDocument.description,
@@ -111,7 +112,7 @@ class ProductMongooseDao {
       stock: productDocument.stock,
       category: productDocument.category,
       status: productDocument.status
-    }
+    })
   }
 }
 
@@ -127,4 +128,4 @@ class ProductCodeDoesntExistError extends Error {
   }
 }
 
-export default ProductMongooseDao;
+export default ProductMongooseRepository;

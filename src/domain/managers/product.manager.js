@@ -1,16 +1,11 @@
-import ProductMongooseDao from '../../data/daos/mongoose/product.dao.js';
-import config from '../../config/index.js';
+import container from '../../container.js';
 //import ProductFsDao from '../daos/fs/Product.dao.js';
 
 
 class ProductManager {
 
   constructor() {
-    if (config.persistanceType == 1) {
-      this.productDao = new ProductMongooseDao();
-    } else {
-      //this.productDao = new ProductFsDao();
-    }
+    this.productRepository = container.resolve("ProductRepository");
   }
 
   async list(params) {
@@ -26,27 +21,27 @@ class ProductManager {
       });
     }
     const optionsParams = { query: query, sort: sort, page: page, limit: limit };
-    return this.productDao.find(optionsParams);
+    return this.productRepository.find(optionsParams);
   }
 
   async getOne(id) {
-    return await this.productDao.findOne(id);
+    return await this.productRepository.findOne(id);
   }
 
   async create(product) {
     await this.validateFormat(product);
-    return this.productDao.create(product);
+    return this.productRepository.create(product);
   }
 
   async update(id, product) {
     await this.validateFormat(product);
-    await this.productDao.update(id, product);
-    return await this.productDao.findOneSpecial(id);
+    await this.productRepository.update(id, product);
+    return await this.productRepository.findOneSpecial(id);
   }
 
   async remove(id) {
-    const product = await this.productDao.findOne(id);
-    await this.productDao.remove(id);
+    const product = await this.productRepository.findOne(id);
+    await this.productRepository.remove(id);
     return product;
   }
 
@@ -60,7 +55,7 @@ class ProductManager {
     if (typeof (stock) !== "number") throw new InvalidFormatError("stock");
     if (typeof (status) !== "boolean") throw new InvalidFormatError("status");
     if (typeof (category) !== "string") throw new InvalidFormatError("category");
-    const productExists = await this.productDao.findOneByCode(code);
+    const productExists = await this.productRepository.findOneByCode(code);
     if (productExists) throw new RepeatedCodeError(code);
   }
 }

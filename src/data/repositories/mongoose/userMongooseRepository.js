@@ -1,14 +1,19 @@
 import userSchema from "../../models/user.model.js";
+import User from "../../../domain/entities/user.js";
 
-class UserMongooseDao {
+class UserMongooseRepository {
   async paginate(criteria) {
     const limit = criteria.limit || 10;
     const page = criteria.page || 1;
     const userDocuments = await userSchema.paginate({}, { limit, page });
 
-    userDocuments.docs = userDocuments.docs.map(document => ({
+    userDocuments.docs = userDocuments.docs.map(document => new User({
       id: document._id,
+      firstName: document.firstName,
+      lastName: document.lastName,
+      age: document.age,
       email: document.email,
+      admin: document.admin
     }));
 
     return userDocuments;
@@ -21,16 +26,14 @@ class UserMongooseDao {
       throw new Error("user doesn't exist.");
     }
 
-    return {
+    return new User({
       id: userDocument?._id,
       firstName: userDocument?.firstName,
       lastName: userDocument?.lastName,
       email: userDocument?.email,
       age: userDocument?.age,
       cart: userDocument?.cart,
-      role: userDocument?.role,
-      password: userDocument?.password
-    }
+    });
   }
 
   async getOneByEmail(email) {
@@ -46,15 +49,14 @@ class UserMongooseDao {
   async create(data) {
     const userDocument = await userSchema.create(data);
 
-    return {
+    return new User({
       id: userDocument._id,
       firstName: userDocument.firstName,
       lastName: userDocument.lastName,
       email: userDocument.email,
       age: userDocument.age,
-      cart: userDocument.cart,
-      role: userDocument.role
-    }
+      cart: userDocument.cart
+    })
   }
 
   async updateOne(id, data) {
@@ -64,15 +66,14 @@ class UserMongooseDao {
       throw new Error("User doesn't exist.");
     }
 
-    return {
+    return new User({
       id: userDocument._id,
       firstName: userDocument.firstName,
       lastName: userDocument.lastName,
       email: userDocument.email,
       age: userDocument.age,
-      role: userDocument.role,
       cart: userDocument.cart
-    }
+    })
   }
 
   async deleteOne(id) {
@@ -96,4 +97,4 @@ class UserMongooseDao {
   }
 }
 
-export default UserMongooseDao;
+export default UserMongooseRepository;

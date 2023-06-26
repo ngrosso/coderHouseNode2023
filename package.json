@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/ngrosso/coderHouseNode2023#readme",
   "dependencies": {
+    "awilix": "^8.0.1",
     "bcrypt": "^5.1.0",
     "commander": "^10.0.1",
     "connect-mongo": "^5.0.0",

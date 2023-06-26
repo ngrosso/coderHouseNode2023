@@ -1,42 +1,33 @@
-import CartMongooseDao from "../../data/daos/mongoose/cart.dao.js";
-import ProductMongooseDao from "../../data/daos/mongoose/product.dao.js";
-import UserMongooseDao from "../../data/daos/mongoose/user.dao.js";
-import config from "../../config/index.js";
-//import CartFsDao from "../daos/fs/Cart.dao";
-
+import container from "../../container.js";
 class CartManager {
   constructor() {
-    if (config.persistanceType == 1) {
-      this.cartDao = new CartMongooseDao();
-      this.productDao = new ProductMongooseDao();
-      this.userDao = new UserMongooseDao();
-    } else {
-      //this.cartDao = new CartFsDao();
-    }
+    this.productRepository = container.resolve("ProductRepository");
+    this.cartRepository = container.resolve("CartRepository");
+    this.userRepository = container.resolve("UserRepository");
   }
 
   async list() {
-    return this.cartDao.find();
+    return this.cartRepository.find();
   }
 
   async findOne(cid) {
-    const cart = await this.cartDao.findOne(cid);
+    const cart = await this.cartRepository.findOne(cid);
     if (!cart) throw new CartDoesntExistError(cid);
     return cart;
   }
 
   async create(uid) {
-    const user = await this.userDao.getOne(uid);
+    const user = await this.userRepository.getOne(uid);
     if (user.cart) throw new Error(`User ${uid} already has Cart ${user.cart}`);
-    const cart = await this.cartDao.create();
+    const cart = await this.cartRepository.create();
     if (!cart) throw new Error("Cart coudln't be created");
-    await this.userDao.addCart(uid, cart.id);
+    await this.userRepository.addCart(uid, cart.id);
     return cart;
   }
 
   async insertProduct(cid, pid, quantity) {
-    const cart = await this.cartDao.getOne(cid);
-    const product = await this.productDao.findOne(pid);
+    const cart = await this.cartRepository.getOne(cid);
+    const product = await this.productRepository.findOne(pid);
     if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
     const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
@@ -48,50 +39,50 @@ class CartManager {
         product: product.id
       });
     }
-    return await this.cartDao.updateOne(cid, cart);
+    return await this.cartRepository.updateOne(cid, cart);
   }
 
   async updateCart(cid, products) {
-    const cart = await this.cartDao.findOne(cid);
+    const cart = await this.cartRepository.findOne(cid);
     if (!cart) throw new CartDoesntExistError(cid);
     cart.products = [];
     await products.forEach(async product => {
-      const productInDb = await this.productDao.findOne(product.product.id);
+      const productInDb = await this.productRepository.findOne(product.product.id);
       if (!productInDb) throw new ProductDoesntExistError(product.produdct.id);
     })
     for (const product of products) {
-      const productInDb = await this.productDao.findOne(product.product.id);
+      const productInDb = await this.productRepository.findOne(product.product.id);
       cart.products.push({
         quantity: product.quantity,
         product: productInDb.id
       });
     }
-    return await this.cartDao.updateOne(cid, cart);
+    return await this.cartRepository.updateOne(cid, cart);
   }
 
   async updateProduct(cid, pid, quantity) {
-    const cart = await this.cartDao.getOne(cid);
-    const product = await this.productDao.findOne(pid);
+    const cart = await this.cartRepository.getOne(cid);
+    const product = await this.productRepository.findOne(pid);
     if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
     const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
     if (!cartProduct) throw new ProductDoesntExistError(`${pid} in cart: ${cid}`);
     cartProduct.quantity = quantity;
-    return await this.cartDao.updateOne(cid, cart);
+    return await this.cartRepository.updateOne(cid, cart);
   }
 
   async removeProduct(cid, pid) {
-    const cart = await this.cartDao.findOne(cid);
+    const cart = await this.cartRepository.findOne(cid);
     const productsInCart = cart.products.map(p => p.product.id.toString());
     if (!productsInCart.includes(pid)) throw new ProductDoesntExistError(pid);
-    return await this.cartDao.removeProduct(cid, pid);
+    return await this.cartRepository.removeProduct(cid, pid);
   }
 
   async removeCart(uid, cid) {
-    const cart = await this.cartDao.findOne(cid);
+    const cart = await this.cartRepository.findOne(cid);
     if (!cart) throw new CartDoesntExistError(cid);
     await this.UserMongooseDao.removeCart(uid, cid);
-    await this.cartDao.remove(cid);
+    await this.cartRepository.remove(cid);
     return cart;
   }
 }
