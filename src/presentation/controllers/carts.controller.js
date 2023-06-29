@@ -100,6 +100,7 @@ export const removeProduct = async (req, res) => {
     const cart = await manager.removeProduct(cid, pid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
+    console.log(e);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -116,7 +117,8 @@ export const purchaseCart = async (req, res) => {
     const { cart, ticket } = await manager.purchaseCart(cid, user.email);
     res.status(201).json({ success: true, data: { cart: cart, ticket: ticket } });
   } catch (e) {
-    res.status(400).json({ success: false, error: e });
+    console.log(e);
+    res.status(400).json({ success: false, error: e.message || e });
   }
 }
 

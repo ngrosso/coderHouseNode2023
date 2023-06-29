@@ -26,6 +26,7 @@ export const login = async (req, res) => {
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
     res.status(200).send({ success: true, message: `${(role)} Login success!`  });
   } catch (e) {
+    console.log(e);
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
   }
 };
@@ -55,6 +56,7 @@ export const signup = async (req, res) => {
 
     res.status(201).send({ success: true, message: 'User created.', data: user });
   } catch (e) {
+    console.log(e);
     res.status(400).send({ success: false, message: 'User created error.', data: e });
   }
 };
@@ -72,6 +74,7 @@ export const forgetPassword = async (req, res) => {
 
     res.status(200).send({ success: true, message: 'User change password.', data: user });
   } catch (e) {
+    console.log(e);
     res.status(400).send({ success: false, message: 'User change password error.', data: e });
   }
 };
