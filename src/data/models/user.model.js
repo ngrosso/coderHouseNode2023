@@ -6,7 +6,7 @@ const userCollection = 'users';
 const UserSchema = new Schema({
   firstName: {type:Schema.Types.String},
   lastName: {type:Schema.Types.String},
-  email: { type: Schema.Types.String, unique: true, required: true },
+  email: { type: Schema.Types.String, unique: true, required: true, index: true },
   age: { type: Schema.Types.Number },
   password: { type: Schema.Types.String },
   cart: { type: Schema.Types.ObjectId, ref: "carts" },

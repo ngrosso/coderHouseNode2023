@@ -11,6 +11,7 @@ export const login = async (req, res) => {
 
     const manager = new UserManager();
     const user = await manager.getOneByEmail(email);
+    const role = (user.admin)?"Admin":"User";
     if (!user) {
       throw new Error('User not found.');
     }
@@ -20,16 +21,10 @@ export const login = async (req, res) => {
       return res.status(401).send({ success: false, message: 'Login failed, invalid password.' })
     }
 
-    // req.session.user = { email };
-    // if (user.admin) {
-    //   req.session.user.admin = true;
-    //   return res.status(200).send({ success: true, message: 'Admin Login success!' });
-    // }
-
     const accessToken = await generateToken(user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
-    res.status(200).send({ success: true, message: 'User Login success!' });
+    res.status(200).send({ success: true, message: `${(role)} Login success!`  });
   } catch (e) {
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
   }

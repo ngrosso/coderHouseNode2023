@@ -113,7 +113,7 @@ class CartMongooseRepository {
 
   async removeProduct(cid, pid) {
     const cartDocument = await CartSchema.findOne({ _id: cid })
-    cartDocument.products = cartDocument.products.filter(p => p.product._id != pid);
+    cartDocument.products = cartDocument.products.filter(p => p.product.id != pid);
     await cartDocument.save();
 
     return new Cart({

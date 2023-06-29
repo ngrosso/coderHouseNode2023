@@ -1,9 +1,12 @@
 import container from "../../container.js";
+import dayjs from 'dayjs';
+import { nanoid } from "nanoid";
 class CartManager {
   constructor() {
     this.productRepository = container.resolve("ProductRepository");
     this.cartRepository = container.resolve("CartRepository");
     this.userRepository = container.resolve("UserRepository");
+    this.ticketRepository = container.resolve("TicketRepository");
   }
 
   async list() {
@@ -84,6 +87,37 @@ class CartManager {
     await this.UserMongooseDao.removeCart(uid, cid);
     await this.cartRepository.remove(cid);
     return cart;
+  }
+
+  async purchaseCart(cid, email) {
+    const cart = await this.cartRepository.findOne(cid);
+    if (!cart) throw new CartDoesntExistError(cid);
+
+    let cartResults = await Promise.all(cart.products.map(async product => {
+      const productInDb = await this.productRepository.findOne(product.product.id);
+      if (!productInDb) return ({ "reason": "Product doesn't exist anymore", "productId": product.product.id });
+      if (productInDb.stock < product.quantity) return ({ "reason": "Not enough stock", "productId": product.product.id.toHexString(), "currentStock": productInDb.stock });
+      productInDb.stock -= product.quantity;
+      await this.productRepository.update(product.product.id, productInDb);
+      await this.cartRepository.removeProduct(cid, product.product.id);
+    }));
+
+    const cartResultLength = cartResults.length;
+
+    cartResults = cartResults.filter(product => product != null);
+
+    const filteredCartResultLength = cartResults.length;
+
+    if (cartResultLength == filteredCartResultLength) throw ({"cart":cartResults});
+    const ticket = await this.ticketRepository.create({
+      code: nanoid(),
+      purchaseDateTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      amount: cart.products
+        .filter(product => !JSON.stringify(cartResults).includes(product.product.id.toHexString()))
+        .reduce((acc, product) => acc + product.quantity * product.product.price, 0).toFixed(2),
+      purchaser: email
+    });
+    return ({ "ticket": ticket, "cart": cartResults });
   }
 }
 

@@ -7,12 +7,11 @@ export class CartController {
 }
 
 export const create = async (req, res) => {
-  //access jwt as cookir and decode user id
-  const token = req.cookies.accessToken;
-  const decoded = jwt.verify(token, config.jwtPrivateKey);
+  const { accessToken } = req.cookies;
+  const { user } = jwt.verify(accessToken, config.jwtPrivateKey);
   const manager = new CartManager();
   try {
-    const newCart = await manager.create(decoded.user.id);
+    const newCart = await manager.create(user.id);
     res.status(201).json({ success: true, data: newCart });
   } catch (e) {
     console.log(e);
@@ -102,6 +101,22 @@ export const removeProduct = async (req, res) => {
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
     res.status(400).json({ success: false, error: e.message });
+  }
+}
+
+export const purchaseCart = async (req, res) => {
+  const { accessToken } = req.cookies;
+  const { cid } = req.params;
+  const { user } = jwt.verify(accessToken, config.jwtPrivateKey);
+
+  const manager = new CartManager();
+  try {
+    if (!user.cart) throw new Error("User doesn't have a cart");
+    if (user.cart != cid) throw new Error("User's cart doesn't match the one in the request");
+    const { cart, ticket } = await manager.purchaseCart(cid, user.email);
+    res.status(201).json({ success: true, data: { cart: cart, ticket: ticket } });
+  } catch (e) {
+    res.status(400).json({ success: false, error: e });
   }
 }
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import auth from "../middlewares/auth.middleware.js";
-import { create, list, findOne, insertProduct, updateCart,updateProduct, removeCart, removeProduct } from "../../presentation/controllers/carts.controller.js";
+import { create, list, findOne, insertProduct, updateCart,updateProduct, removeCart, removeProduct, purchaseCart } from "../../presentation/controllers/carts.controller.js";
 
 const cartRouter = Router();
 
@@ -12,5 +12,7 @@ cartRouter.put("/:cid",auth, updateCart);
 cartRouter.put("/:cid/product/:pid", auth, updateProduct);
 cartRouter.delete("/:cid", auth, removeCart);
 cartRouter.delete("/:cid/product/:pid", auth, removeProduct);
+
+cartRouter.post("/:cid/purchase",auth,purchaseCart)
 
 export default cartRouter

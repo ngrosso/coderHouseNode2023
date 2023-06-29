@@ -13,7 +13,8 @@ class UserMongooseRepository {
       lastName: document.lastName,
       age: document.age,
       email: document.email,
-      admin: document.admin
+      admin: document.admin,
+      cart: document.cart
     }));
 
     return userDocuments;
@@ -42,7 +43,8 @@ class UserMongooseRepository {
       id: userDocument?._id,
       email: userDocument?.email,
       admin: userDocument?.admin,
-      password: userDocument?.password
+      password: userDocument?.password,
+      cart: userDocument?.cart,
     }
   }
 
