@@ -36,6 +36,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22"
   }
 }
