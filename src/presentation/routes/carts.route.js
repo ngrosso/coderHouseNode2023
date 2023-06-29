@@ -12,7 +12,6 @@ cartRouter.put("/:cid",auth, updateCart);
 cartRouter.put("/:cid/product/:pid", auth, updateProduct);
 cartRouter.delete("/:cid", auth, removeCart);
 cartRouter.delete("/:cid/product/:pid", auth, removeProduct);
-
 cartRouter.post("/:cid/purchase",auth,purchaseCart)
 
 export default cartRouter

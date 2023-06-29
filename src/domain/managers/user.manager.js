@@ -36,6 +36,7 @@ class UserManager {
     user.password = dto.password;
 
     return this.userRepository.updateOne(user.id, user);
+
   }
 }
 

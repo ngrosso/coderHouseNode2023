@@ -1,6 +1,4 @@
 import container from '../../container.js';
-//import ProductFsDao from '../daos/fs/Product.dao.js';
-
 
 class ProductManager {
 
@@ -26,11 +24,13 @@ class ProductManager {
 
   async getOne(id) {
     return await this.productRepository.findOne(id);
+
   }
 
   async create(product) {
     await this.validateFormat(product);
     return this.productRepository.create(product);
+
   }
 
   async update(id, product) {
@@ -56,6 +56,7 @@ class ProductManager {
     if (typeof (status) !== "boolean") throw new InvalidFormatError("status");
     if (typeof (category) !== "string") throw new InvalidFormatError("category");
     const productExists = await this.productRepository.findOneByCode(code);
+
     if (productExists) throw new RepeatedCodeError(code);
   }
 }

@@ -1,3 +1,4 @@
+
 import container from "../../container.js";
 import dayjs from 'dayjs';
 import { nanoid } from "nanoid";
@@ -20,6 +21,7 @@ class CartManager {
   }
 
   async create(uid) {
+
     const user = await this.userRepository.getOne(uid);
     if (user.cart) throw new Error(`User ${uid} already has Cart ${user.cart}`);
     const cart = await this.cartRepository.create();
@@ -42,6 +44,7 @@ class CartManager {
         product: product.id
       });
     }
+
     return await this.cartRepository.updateOne(cid, cart);
   }
 
