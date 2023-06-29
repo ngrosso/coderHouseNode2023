@@ -2,8 +2,10 @@ import dotenv from "dotenv";
 dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 const config = {
-  mongoAtlasUri: process.env.MONGO_ATLAS_URI,
-  mongoDBName: process.env.MONGO_DB_NAME,
+  appType: process.env.APP_TYPE,
+  dbType: process.env.DB_TYPE,
+  dbUri: process.env.DB_URI,
+  dbName: process.env.DB_NAME,
   sessionSecret: process.env.SESSION_SECRET,
   jwtPrivateKey: process.env.PRIVATE_KEY,
   persistanceType: process.env.PERSISTANCE_TYPE,

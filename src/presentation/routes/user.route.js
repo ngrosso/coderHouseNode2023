@@ -3,12 +3,12 @@ import auth from "../middlewares/auth.middleware.js";
 import admin from "../middlewares/admin.middleware.js";
 import { list, deleteOne, getOne, save, update } from "../../presentation/controllers/user.controller.js";
 
-const usersRoute = Router();
+const usersRouter = Router();
 
-usersRoute.get('/', auth, admin, list);
-usersRoute.get('/:id', auth, admin, getOne);
-usersRoute.post('/', auth, admin, save);
-usersRoute.put('/:id', auth, admin, update);
-usersRoute.delete('/:id', auth, admin, deleteOne);
+usersRouter.get('/', auth, admin, list);
+usersRouter.get('/:id', auth, admin, getOne);
+usersRouter.post('/', auth, admin, save);
+usersRouter.put('/:id', auth, admin, update);
+usersRouter.delete('/:id', auth, admin, deleteOne);
 
-export default usersRoute;
+export default usersRouter;
