@@ -9,6 +9,8 @@ const config = {
   sessionSecret: process.env.SESSION_SECRET,
   jwtPrivateKey: process.env.PRIVATE_KEY,
   persistanceType: process.env.PERSISTANCE_TYPE,
+  mailerUser: process.env.MAILER_USER,
+  mailerPass: process.env.MAILER_PASS,
   port: process.env.PORT
 }
 
