@@ -2,6 +2,7 @@
 import container from "../../container.js";
 import dayjs from 'dayjs';
 import { nanoid } from "nanoid";
+import sendMail from "../../shared/mailer.js";
 class CartManager {
   constructor() {
     this.productRepository = container.resolve("ProductRepository");
@@ -99,7 +100,7 @@ class CartManager {
     let cartResults = await Promise.all(cart.products.map(async product => {
       const productInDb = await this.productRepository.findOne(product.product.id);
       if (!productInDb) return ({ "reason": "Product doesn't exist anymore", "productId": product.product.id });
-      if (productInDb.stock < product.quantity) return ({ "reason": "Not enough stock", "productId": product.product.id.toHexString(),"quantity":product.quantity, "currentStock": productInDb.stock });
+      if (productInDb.stock < product.quantity) return ({ "reason": "Not enough stock", "productId": product.product.id.toHexString(), "quantity": product.quantity, "currentStock": productInDb.stock });
       productInDb.stock -= product.quantity;
       await this.productRepository.update(product.product.id, productInDb);
       await this.cartRepository.removeProduct(cid, product.product.id);
@@ -110,8 +111,8 @@ class CartManager {
     cartResults = cartResults.filter(product => product != null);
 
     const filteredCartResultLength = cartResults.length;
-
-    if (cartResultLength == filteredCartResultLength) throw ({"cart":cartResults});
+    if (cartResultLength == 0 && filteredCartResultLength == 0) throw new Error("Cart is empty");
+    if (cartResultLength == filteredCartResultLength) throw ({ "cart": cartResults });
     const ticket = await this.ticketRepository.create({
       code: nanoid(),
       purchaseDateTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
@@ -120,6 +121,8 @@ class CartManager {
         .reduce((acc, product) => acc + product.quantity * product.product.price, 0).toFixed(2),
       purchaser: email
     });
+    console.log(cartResults)
+    await sendMail(email, ticket, cart);
     return ({ "ticket": ticket, "cart": cartResults });
   }
 }
