@@ -1,7 +1,7 @@
 import UserManager from "../../domain/managers/user.manager.js";
+import { verifyToken } from "../../shared/auth.js";
 import { createHash, isValidPassword, generateToken } from "../../shared/auth.js";
-import jwt from "jsonwebtoken";
-import config from "../../config/index.js";
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -66,6 +66,7 @@ export const signup = async (req, res) => {
 export const forgetPassword = async (req, res) => {
   const { email, password } = req.body;
   const manager = new UserManager();
+  
   try {
     const dto = {
       email,
@@ -83,7 +84,7 @@ export const forgetPassword = async (req, res) => {
 
 export const current = async (req, res) => {
   const manager = new UserManager();
-  const { user } = jwt.verify(req.cookies.accessToken, config.jwtPrivateKey);
+  const { user } = await verifyToken(req.cookies.accessToken);
 
   try {
     const userDoc = await manager.getOne(user.id);

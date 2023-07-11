@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { verifyToken } from "../../shared/auth.js";
 import config from "../../config/index.js";
 import CartManager from "../../domain/managers/cart.manager.js";
 
@@ -8,7 +8,7 @@ export class CartController {
 
 export const create = async (req, res) => {
   const { accessToken } = req.cookies;
-  const { user } = jwt.verify(accessToken, config.jwtPrivateKey);
+  const { user } = await verifyToken(accessToken);
   const manager = new CartManager();
   try {
     const newCart = await manager.create(user.id);
@@ -108,7 +108,7 @@ export const removeProduct = async (req, res) => {
 export const purchaseCart = async (req, res) => {
   const { accessToken } = req.cookies;
   const { cid } = req.params;
-  const { user } = jwt.verify(accessToken, config.jwtPrivateKey);
+  const { user } = await verifyToken(accessToken);
 
   const manager = new CartManager();
   try {
