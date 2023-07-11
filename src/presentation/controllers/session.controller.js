@@ -1,5 +1,7 @@
 import UserManager from "../../domain/managers/user.manager.js";
 import { createHash, isValidPassword, generateToken } from "../../shared/auth.js";
+import jwt from "jsonwebtoken";
+import config from "../../config/index.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -11,7 +13,7 @@ export const login = async (req, res) => {
 
     const manager = new UserManager();
     const user = await manager.getOneByEmail(email);
-    const role = (user.admin)?"Admin":"User";
+    const role = (user.admin) ? "Admin" : "User";
     if (!user) {
       throw new Error('User not found.');
     }
@@ -24,7 +26,7 @@ export const login = async (req, res) => {
     const accessToken = await generateToken(user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
-    res.status(200).send({ success: true, message: `${(role)} Login success!`  });
+    res.status(200).send({ success: true, message: `${(role)} Login success!` });
   } catch (e) {
     console.log(e);
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
@@ -76,5 +78,18 @@ export const forgetPassword = async (req, res) => {
   } catch (e) {
     console.log(e);
     res.status(400).send({ success: false, message: 'User change password error.', data: e });
+  }
+};
+
+export const current = async (req, res) => {
+  const manager = new UserManager();
+  const { user } = jwt.verify(req.cookies.accessToken, config.jwtPrivateKey);
+
+  try {
+    const userDoc = await manager.getOne(user.id);
+    res.status(200).send({ success: true, data: userDoc });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({ success: false, data: e.message });
   }
 };
