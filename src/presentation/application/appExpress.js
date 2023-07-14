@@ -8,15 +8,15 @@ import cartRouter from "../routes/carts.route.js";
 import errorHandler from "../middlewares/errorHandler.middleware.js";
 
 
-class AppExpress{
-  init(){
+class AppExpress {
+  init() {
     this.app = express();
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
   }
 
-  build(){
+  build() {
     this.app.use('/api/sessions', sessionRouter);
     this.app.use('/api/users', usersRouter);
     this.app.use("/api/products", productsRouter);
@@ -24,11 +24,20 @@ class AppExpress{
     this.app.use(errorHandler);
   }
 
-  listen(){
+  listen() {
     const PORT = config.port || 8080;
     this.app.listen(PORT, () => {
       console.log(`Servidor http escuchando en el puerto ${PORT}`);
     });
+  }
+
+
+  callback() {
+    return this.app;
+  }
+
+  close() {
+    this.server.close();
   }
 
 }
