@@ -7,7 +7,7 @@ const initServer = async () => {
   const db = DbFactory.create(config.dbType);
   db.init(config.dbUri, config.dbName);
 
-  const app = AppFactory.create();
+  const app = AppFactory.create(config.appType);
 
   app.init();
   app.build();
