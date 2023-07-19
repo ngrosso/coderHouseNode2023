@@ -1,11 +1,11 @@
 import AppExpress from "../application/appExpress.js";
 
 class AppFactory {
-    static create(appType) {
+    static create(APP_TYPE) {
         const apps = new Map();
         apps.set('AppExpress', AppExpress);
 
-        const app = apps.get(appType);
+        const app = apps.get(APP_TYPE);
         return new app();
     }
 }

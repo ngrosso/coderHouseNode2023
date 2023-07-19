@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   port: 587,
   auth: {
-    user: config.mailerUser,
-    pass: config.mailerPass
+    user: config.MAILER_USER,
+    pass: config.MAILER_PASS
   }
 })
 
@@ -24,7 +24,7 @@ const sendMail = async (targetMail, ticket, cart) => {
   </html>`
 
   return await transporter.sendMail({
-    from: config.mailerUser,
+    from: config.MAILER_USER,
     to: targetMail,
     subject: subjectText,
     html: body

@@ -25,7 +25,7 @@ class AppExpress {
   }
 
   listen() {
-    const PORT = config.port || 8080;
+    const PORT = config.PORT || 8080;
     this.app.listen(PORT, () => {
       console.log(`Servidor http escuchando en el puerto ${PORT}`);
     });

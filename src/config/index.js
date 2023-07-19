@@ -1,17 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
+if(process.env.NODE_ENV !== "production"){
+  const dotenv = await import('dotenv')
+  dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
+}
 
 const config = {
-  appType: process.env.APP_TYPE,
-  dbType: process.env.DB_TYPE,
-  dbUri: process.env.DB_URI,
-  dbName: process.env.DB_NAME,
-  sessionSecret: process.env.SESSION_SECRET,
-  jwtPrivateKey: process.env.PRIVATE_KEY,
-  persistanceType: process.env.PERSISTANCE_TYPE,
-  mailerUser: process.env.MAILER_USER,
-  mailerPass: process.env.MAILER_PASS,
-  port: process.env.PORT
+  APP_TYPE: process.env.APP_TYPE,
+  DB_TYPE: process.env.DB_TYPE,
+  DB_URI: process.env.DB_URI,
+  DB_NAME: process.env.DB_NAME,
+  SESSION_SECRET: process.env.SESSION_SECRET,
+  JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
+  MAILER_USER: process.env.MAILER_USER,
+  MAILER_PASS: process.env.MAILER_PASS,
+  PORT: process.env.PORT
 }
 
 export default config;

@@ -9,7 +9,7 @@ const roleAuth = (req, res, next) => {
 
   const token = authHeader.split(' ')[1]; // Bearer tokenString
 
-  jwt.verify(token, config.jwtPrivateKey, (error, credentials) => {
+  jwt.verify(token, config.JWT_PRIVATE_KEY, (error, credentials) => {
     if (error || !credentials.user.admin) return res.status(403).send({ error: 'Admin Authentication error' });
 
     req.email = credentials.email;
