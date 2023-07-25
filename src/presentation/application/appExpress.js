@@ -1,5 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import { engine } from "express-handlebars";
+import { resolve } from "path";
 import config from "../../config/index.js";
 import sessionRouter from "../routes/session.route.js";
 import usersRouter from "../routes/user.route.js";
@@ -14,6 +16,15 @@ class AppExpress {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(express.static('public'));
+
+    const viewsPath = resolve('src/public/views');
+    this.app.engine('handlebars', engine({
+      layoutsDir: `${viewsPath}/layouts`,
+      defaultLayout: `${viewsPath}/layouts/main.handlebars`,
+    }));
+    this.app.set('view engine', 'handlebars');
+    this.app.set('views', viewsPath);
   }
 
   build() {
