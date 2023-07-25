@@ -31,7 +31,7 @@ class UserManager {
     return this.userRepository.deleteOne(id);
   }
 
-  async forgetPassword(dto) {
+  async changePassword(dto) {
     const user = await this.userRepository.getOneByEmail(dto.email);
     user.password = dto.password;
 
