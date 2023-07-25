@@ -12,6 +12,7 @@ const config = {
   JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
   MAILER_USER: process.env.MAILER_USER,
   MAILER_PASS: process.env.MAILER_PASS,
+  HOST_URL: process.env.HOST_URL,
   PORT: process.env.PORT
 }
 
