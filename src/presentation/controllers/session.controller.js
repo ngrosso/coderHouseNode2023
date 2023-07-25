@@ -85,19 +85,16 @@ export const changePassword = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  const { token } = req.params
-  //TODO: Si viene sin token y solo el mail Enviar mail con token para resetear password
-  if (token === undefined) {
-    const manager = new UserManager();
-    try {
-      const user = await manager.getOneByEmail(email);
-      const accessToken = await generateToken(user);
-      const mail = await forgotPasswordMailer(email, accessToken);
-      res.status(200).send({ success: true, message: 'Recovery Mail sent.' });
-    } catch (e) {
-      console.log(e);
-      res.status(400).send({ success: false, message: 'Recovery Mail sent error.', data: e.message });
-    }
+  const manager = new UserManager();
+
+  try {
+    const user = await manager.getOneByEmail(email);
+    const accessToken = await generateToken(user);
+    const mail = await forgotPasswordMailer(email, accessToken);
+    res.status(200).send({ success: true, message: 'Recovery Mail sent.',data: mail.response });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({ success: false, message: 'Recovery Mail sent error.', data: e.message });
   }
 }
 
