@@ -2,7 +2,7 @@
 import container from "../../container.js";
 import dayjs from 'dayjs';
 import { nanoid } from "nanoid";
-import sendMail from "../../shared/mailer.js";
+import { sendMail } from "../../shared/mailer.js";
 class CartManager {
   constructor() {
     this.productRepository = container.resolve("ProductRepository");

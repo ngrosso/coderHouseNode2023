@@ -8,16 +8,16 @@ import TicketMongooseRepository from "./data/repositories/mongoose/ticketMongoos
 
 const container = createContainer();
 
-if (config.dbType === 'MongooseAdapter') {
+if (config.DB_TYPE === 'MongooseAdapter') {
   container.register('UserRepository', asClass(UserMongooseRepository), { lifetime: Lifetime.SINGLETON });
   container.register('ProductRepository', asClass(ProductMongooseRepository), { lifetime: Lifetime.SINGLETON });
   container.register('CartRepository', asClass(CartMongooseRepository), { lifetime: Lifetime.SINGLETON });
   container.register('TicketRepository', asClass(TicketMongooseRepository), { lifetime: Lifetime.SINGLETON });
 }
-else if (config.dbType === 'FileAdapter') {
-  throw new Error('dbType unimplemented yet');
+else if (config.DB_TYPE === 'FileAdapter') {
+  throw new Error('DB_TYPE unimplemented yet');
 } else {
-  throw new Error('Unsupported dbType');
+  throw new Error('Unsupported DB_TYPE');
 }
 
 export default container;

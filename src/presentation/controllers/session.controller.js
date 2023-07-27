@@ -1,5 +1,8 @@
 import UserManager from "../../domain/managers/user.manager.js";
+import { verifyToken } from "../../shared/auth.js";
 import { createHash, isValidPassword, generateToken } from "../../shared/auth.js";
+import { forgotPasswordMailer } from "../../shared/mailer.js";
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -11,7 +14,7 @@ export const login = async (req, res) => {
 
     const manager = new UserManager();
     const user = await manager.getOneByEmail(email);
-    const role = (user.admin)?"Admin":"User";
+    const role = (user.admin) ? "Admin" : "User";
     if (!user) {
       throw new Error('User not found.');
     }
@@ -24,7 +27,7 @@ export const login = async (req, res) => {
     const accessToken = await generateToken(user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
-    res.status(200).send({ success: true, message: `${(role)} Login success!`  });
+    res.status(200).send({ success: true, message: `${(role)} Login success!` });
   } catch (e) {
     console.log(e);
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
@@ -61,20 +64,75 @@ export const signup = async (req, res) => {
   }
 };
 
-export const forgetPassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   const { email, password } = req.body;
   const manager = new UserManager();
+
   try {
     const dto = {
       email,
       password: await createHash(password)
     };
 
-    const user = await manager.forgetPassword(dto);
+    const user = await manager.changePassword(dto);
 
     res.status(200).send({ success: true, message: 'User change password.', data: user });
   } catch (e) {
     console.log(e);
     res.status(400).send({ success: false, message: 'User change password error.', data: e });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const manager = new UserManager();
+
+  try {
+    const user = await manager.getOneByEmail(email);
+    const accessToken = await generateToken(user);
+    const mail = await forgotPasswordMailer(email, accessToken);
+    res.status(200).send({ success: true, message: 'Recovery Mail sent.',data: mail.response });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({ success: false, message: 'Recovery Mail sent error.', data: e.message });
+  }
+}
+
+export const forgotPasswordView = async (req, res) => {
+  const { token } = req.query;
+  res.render('forgot-password', { title: "Password Reset", token: token });
+}
+
+export const changeForgotPassword = async (req, res) => {
+  const { token, password, repeatPassword } = req.body;
+  const manager = new UserManager();
+
+  try {
+    if (password !== repeatPassword) throw new Error("Passwords don't match")
+    const { user } = await verifyToken(token);
+    const dto = {
+      email: user.email,
+      password: await createHash(password)
+    };
+
+    const userDoc = await manager.changePassword(dto);
+
+    res.status(200).send({ success: true, message: 'User password changed.', data: userDoc });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({ success: false, message: 'User password change error.', data: e.message });
+  }
+};
+
+export const current = async (req, res) => {
+  const manager = new UserManager();
+  const { user } = await verifyToken(req.cookies.accessToken);
+
+  try {
+    const userDoc = await manager.getOne(user.id);
+    res.status(200).send({ success: true, data: userDoc });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({ success: false, data: e.message });
   }
 };

@@ -11,5 +11,9 @@ export const isValidPassword = async (password, passwordHash) => {
 }
 
 export const generateToken = async (user) => {
-  return await jwt.sign({ user: { ...user, password: undefined } }, config.jwtPrivateKey, { expiresIn: '60m' });
+  return await jwt.sign({ user: { ...user, password: undefined } }, config.JWT_PRIVATE_KEY, { expiresIn: '60m' });
+}
+
+export const verifyToken = async (token) => {
+  return await jwt.verify(token, config.JWT_PRIVATE_KEY);
 }

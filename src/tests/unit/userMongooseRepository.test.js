@@ -4,7 +4,7 @@ import DbFactory from "../../data/factories/dbFactory.js";
 import UserMongooseRepository from '../../data/repositories/mongoose/userMongooseRepository';
 
 const userRepository = new UserMongooseRepository();
-const db = DbFactory.create(config.dbType);
+const db = DbFactory.create(config.DB_TYPE);
 let userResult = {};
 
 describe('User Mongoose Repository', () => {
@@ -33,7 +33,7 @@ describe('User Mongoose Repository', () => {
   });
 
   beforeAll(async () => {
-    await db.init(config.dbUri, config.dbName);
+    await db.init(config.DB_URI, config.DB_NAME);
   });
   afterAll(async () => {
     await userRepository.deleteOne(userResult.id);
