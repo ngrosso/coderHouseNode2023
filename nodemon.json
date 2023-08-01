@@ -5,9 +5,10 @@
     "node_modules/**/node_modules"
   ],
   "watch": [
-    "src/*"
+    "src/*",
+    "docs/*"
   ],
   "exec": "NODE_ENV=dev node src/index.js --trace-warnings",
   "legacyWatch": true,
-  "ext": "js, handlebars,css"
+  "ext": "js, handlebars,css,yaml"
 }
