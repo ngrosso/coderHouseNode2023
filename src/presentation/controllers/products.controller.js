@@ -21,6 +21,7 @@ export const getOne = async (req, res) => {
   const manager = new ProductManager();
   try {
     const product = await manager.getOne(id);
+    if (!product) res.status(404).json({ success: false, error: 'Product not found' });
     res.status(200).json({ succcess: true, data: product });
   } catch (e) {
     console.log(e);

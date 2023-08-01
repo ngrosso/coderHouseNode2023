@@ -4,14 +4,14 @@ import { create, list, findOne, insertProduct, updateCart,updateProduct, removeC
 
 const cartRouter = Router();
 
-cartRouter.post("/",auth, create);
 cartRouter.get("/", auth, list); // FIXME:Solo para pruebas internas y pruebas del tutor
+cartRouter.post("/",auth, create);
 cartRouter.get("/:cid",auth, findOne);
-cartRouter.post("/:cid/product/:pid", auth, insertProduct);
 cartRouter.put("/:cid",auth, updateCart);
-cartRouter.put("/:cid/product/:pid", auth, updateProduct);
 cartRouter.delete("/:cid", auth, removeCart);
+cartRouter.post("/:cid/purchase",auth,purchaseCart);
+cartRouter.post("/:cid/product/:pid", auth, insertProduct);
+cartRouter.put("/:cid/product/:pid", auth, updateProduct);
 cartRouter.delete("/:cid/product/:pid", auth, removeProduct);
-cartRouter.post("/:cid/purchase",auth,purchaseCart)
 
 export default cartRouter

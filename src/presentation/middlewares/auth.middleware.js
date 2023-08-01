@@ -11,7 +11,7 @@ const auth = (req, res, next) => {
   const token = authHeader.split(' ')[1]; // Bearer tokenString
 
   jwt.verify(token, config.JWT_PRIVATE_KEY, (error, credentials) => {
-    if (error) return res.status(403).send({ error: 'Authentication error' });
+    if (error) return res.status(403).send({ success: false, error: 'Authentication error' });
 
     req.email = credentials.email;
     next();
