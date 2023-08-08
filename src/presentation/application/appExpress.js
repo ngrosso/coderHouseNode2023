@@ -10,7 +10,8 @@ import usersRouter from "../routes/user.route.js";
 import productsRouter from "../routes/products.route.js";
 import cartRouter from "../routes/carts.route.js";
 import errorHandler from "../middlewares/errorHandler.middleware.js";
-
+import { addLogger, logger } from "../../utils/logger.js";
+import loggerTestRouter from "../routes/loggerTest.js";
 
 class AppExpress {
   init() {
@@ -19,6 +20,7 @@ class AppExpress {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(express.static('public'));
+    this.app.use(addLogger);
 
     const viewsPath = resolve('src/public/views');
     this.app.engine('handlebars', engine({
@@ -53,13 +55,14 @@ class AppExpress {
     this.app.use("/api/products", productsRouter);
     this.app.use("/api/carts", cartRouter);
     this.app.use("/api/docs", swaggerUIExpress.serve, swaggerUIExpress.setup(swaggerJsdoc(this.swaggerOptions)));
+    this.app.use("/api/loggerTest", loggerTestRouter);
     this.app.use(errorHandler);
   }
 
   listen() {
     const PORT = config.PORT || 8080;
     this.app.listen(PORT, () => {
-      console.log(`Servidor http escuchando en el puerto ${PORT}`);
+      logger.info(`Servidor http escuchando en el puerto ${PORT}`);
     });
   }
 

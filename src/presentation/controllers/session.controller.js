@@ -29,7 +29,7 @@ export const login = async (req, res) => {
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
     res.status(200).send({ success: true, message: `${(role)} Login success!` });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
   }
 };
@@ -59,7 +59,7 @@ export const signup = async (req, res) => {
 
     res.status(201).send({ success: true, message: 'User created.', data: user });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(400).send({ success: false, message: 'User created error.', data: e });
   }
 };
@@ -78,7 +78,7 @@ export const changePassword = async (req, res) => {
 
     res.status(200).send({ success: true, message: 'User change password.', data: user });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(400).send({ success: false, message: 'User change password error.', data: e });
   }
 };
@@ -93,7 +93,7 @@ export const forgotPassword = async (req, res) => {
     const mail = await forgotPasswordMailer(email, accessToken);
     res.status(200).send({ success: true, message: 'Recovery Mail sent.',data: mail.response });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(400).send({ success: false, message: 'Recovery Mail sent error.', data: e.message });
   }
 }
@@ -119,7 +119,7 @@ export const changeForgotPassword = async (req, res) => {
 
     res.status(200).send({ success: true, message: 'User password changed.', data: userDoc });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(400).send({ success: false, message: 'User password change error.', data: e.message });
   }
 };
@@ -132,7 +132,7 @@ export const current = async (req, res) => {
     const userDoc = await manager.getOne(user.id);
     res.status(200).send({ success: true, data: userDoc });
   } catch (e) {
-    console.log(e);
+    req.logger.error(e);
     res.status(400).send({ success: false, data: e.message });
   }
 };

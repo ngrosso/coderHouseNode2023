@@ -8,7 +8,7 @@ export const list = async (req, res) => {
   
     res.status(200).json({ success: true, data: users.docs, ...users, docs: undefined });
   }catch(e){
-    console.log(e);
+    req.logger.error(e);
     res.status(400).json({ success: false, message: e.message });
   }
 };
@@ -22,7 +22,7 @@ export const getOne = async (req, res) => {
   
     res.status(200).json({ success: true, message: 'User found.', data: user });
   }catch(e){
-    console.log(e);
+    req.logger.error(e);
     res.status(400).json({ success: false, message: e.message });
   }
 };
@@ -34,7 +34,7 @@ export const save = async (req, res) => {
   
     res.status(201).json({ success: true, message: 'User created.', data: user })
   }catch(e){
-    console.log(e);
+    req.logger.error(e);
     res.status(400).json({ success: false, message: e.message })
   }
 };
@@ -48,7 +48,7 @@ export const update = async (req, res) => {
   
     res.status(200).json({ success: true, message: 'User updated.', data: result })
   }catch(e){
-    console.log(e);
+    req.logger.error(e);
     res.status(400).json({ success: false, message: e.message })
   }
 };
@@ -62,7 +62,7 @@ export const deleteOne = async (req, res) => {
   
     res.status(200).json({ success: true, message: 'User deleted.' })
   }catch(e){
-    console.log(e);
+    req.logger.error(e);
     res.status(400).json({ success: false, message: e.message })
   }
 };

@@ -5,7 +5,6 @@ class ProductMongooseRepository {
 
   async find(params) {
     const { query, page, limit, sort } = params;
-    console.log(params);
 
     const productsDocument = await ProductSchema.paginate({ $and: [{ status: true }, query] }, { page, sort: { price: sort }, limit });
     const { docs, ...rest } = productsDocument;

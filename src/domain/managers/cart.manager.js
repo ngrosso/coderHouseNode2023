@@ -121,7 +121,6 @@ class CartManager {
         .reduce((acc, product) => acc + product.quantity * product.product.price, 0).toFixed(2),
       purchaser: email
     });
-    console.log(cartResults)
     await sendMail(email, ticket, cart);
     return ({ "ticket": ticket, "cart": cartResults });
   }
