@@ -2,5 +2,6 @@
 node_modules
 .env.dev
 .env.test
+.env.production
 coverage
 todo.md
