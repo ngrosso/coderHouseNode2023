@@ -6,7 +6,8 @@
   "scripts": {
     "start": "NODE_ENV=test node ./src/index.js",
     "dev": "nodemon",
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --silent"
+    "test": "NODE_ENV=dev NODE_OPTIONS=--experimental-vm-modules jest --silent",
+    "prod": "NODE_ENV=production node ./src/index.js"
   },
   "type": "module",
   "repository": {
@@ -42,6 +43,7 @@
     "shelljs": "^0.8.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "winston": "^3.10.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
