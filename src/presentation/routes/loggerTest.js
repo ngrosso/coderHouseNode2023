@@ -3,7 +3,7 @@ import { Router } from "express";
 const loggerTestRouter = Router();
 
 loggerTestRouter.get("/", (req, res) => {
-  req.logger.fatal("Logger FATAL level test completed!");
+  //req.logger.fatal("Logger FATAL level test completed!");
   req.logger.error("Logger ERROR level test completed!");
   req.logger.warn("Logger WARN level test completed!");
   req.logger.info("Logger INFO level test completed!");
