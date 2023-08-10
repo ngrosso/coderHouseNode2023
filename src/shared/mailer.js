@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 })
 
 export const sendMail = async (targetMail, ticket, cart) => {
-  const subjectText = "Order confirmation from The Coffeeshop"
+  const subjectText = 'Order confirmation from The Coffeeshop'
   const body = `
   <html>
     <h1>Thank you for your purchase</h1>
@@ -32,13 +32,13 @@ export const sendMail = async (targetMail, ticket, cart) => {
 }
 
 export const forgotPasswordMailer = async (targetMail, token) => {
-  const subjectText = "Password reset request"
+  const subjectText = 'Password reset request'
   const body = `
   <html>
     <h1>Reset your password</h1>
     <p><strong>Click on the following link to reset your password</strong></p>
-    <a href="http://${config.HOST_URL}${config.PORT}/api/sessions/reset-password?token=${token}">Reset password</a>
-    <h4 color="red">Don't share it with anyone!!</h4>
+    <a href='http://${config.HOST_URL}${config.PORT}/api/sessions/reset-password?token=${token}'>Reset password</a>
+    <h4 color='red'>Don't share it with anyone!!</h4>
   </html>`
   return await transporter.sendMail({
     from: config.MAILER_USER,

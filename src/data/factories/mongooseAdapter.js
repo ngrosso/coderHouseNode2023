@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { logger } from "../../utils/logger.js";
+import mongoose from 'mongoose';
+import { logger } from '../../utils/logger.js';
 
 class MongooseAdapter {
   async init(uri, dbName) {
@@ -8,7 +8,7 @@ class MongooseAdapter {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    logger.info("Base de datos Mongo Atlas conectada");
+    logger.info('Base de datos Mongo Atlas conectada');
   }
 
   async close() {

@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import paginate from "mongoose-paginate-v2";
+import mongoose, { Schema } from 'mongoose';
+import paginate from 'mongoose-paginate-v2';
 
 const userCollection = 'users';
 
@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   email: { type: Schema.Types.String, unique: true, required: true, index: true },
   age: { type: Schema.Types.Number },
   password: { type: Schema.Types.String },
-  cart: { type: Schema.Types.ObjectId, ref: "carts" },
+  cart: { type: Schema.Types.ObjectId, ref: 'carts' },
   admin: { type: Schema.Types.Boolean, default: false },
 });
 

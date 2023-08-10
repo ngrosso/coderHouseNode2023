@@ -1,5 +1,5 @@
-import userSchema from "../../models/user.model.js";
-import User from "../../../domain/entities/user.js";
+import userSchema from '../../models/user.model.js';
+import User from '../../../domain/entities/user.js';
 
 class UserMongooseRepository {
   async paginate(criteria) {
@@ -24,7 +24,7 @@ class UserMongooseRepository {
     const userDocument = await userSchema.findOne({ _id: id });
 
     if (!userDocument) {
-      throw new Error("user doesn't exist.");
+      throw new Error("User doesn't exist.");
     }
 
     return new User({
@@ -84,7 +84,7 @@ class UserMongooseRepository {
 
   async addCart(id, cartId) {
     const userDocument = await userSchema.findOne({ _id: id });
-    if (!userDocument) throw new Error("user doesn't exist.");
+    if (!userDocument) throw new Error("User doesn't exist.");
     userDocument.cart = cartId;
     return userDocument.save();
   }
@@ -92,7 +92,7 @@ class UserMongooseRepository {
   async removeCart(id, cartId) {
     const userDocument = await userSchema.findOne({ _id: id });
     if (!userDocument) {
-      throw new Error("user doesn't exist.");
+      throw new Error("User doesn't exist.");
     }
     userDocument.cart = null;
     return userDocument.save();

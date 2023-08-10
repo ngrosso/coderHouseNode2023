@@ -1,7 +1,7 @@
-import fs from "fs/promises";
-import ProductDao from "../daos/fs/Product.dao.js";
-import Cart from "./Cart.js";
-import CartProduct from "./CartProduct.js";
+import fs from 'fs/promises';
+import ProductDao from '../daos/fs/Product.dao.js';
+import Cart from './Cart.js';
+import CartProduct from './CartProduct.js';
 
 class CartManager {
 
@@ -26,7 +26,7 @@ class CartManager {
     }
     if (!fileExists) {
       try {
-        await fs.writeFile(this.path, "[]");
+        await fs.writeFile(this.path, '[]');
       } catch (e) {
         throw new Error(e);
       }
@@ -55,7 +55,7 @@ class CartManager {
   }
 
   async addProductToCart(cid, pid, quantity) {
-    if (typeof (quantity) !== "number" || isNaN(quantity)) throw new InvalidInformationError("cantidad");
+    if (typeof (quantity) !== 'number' || isNaN(quantity)) throw new InvalidInformationError('cantidad');
     const cart = await this.getCartById(cid);
     if (cart) {
       const productExistsCheck = await this.productManager.getProductById(pid);
@@ -79,7 +79,7 @@ class CartManager {
 
   async getCarts() {
     try {
-      this.#carts = JSON.parse(await fs.readFile(this.path, "utf-8"));
+      this.#carts = JSON.parse(await fs.readFile(this.path, 'utf-8'));
       return this.#carts;
     } catch (e) {
       throw new Error(e);
@@ -88,7 +88,7 @@ class CartManager {
 
   async getCartById(cid) {
     try {
-      this.#carts = JSON.parse(await fs.readFile(this.path, "utf-8"));
+      this.#carts = JSON.parse(await fs.readFile(this.path, 'utf-8'));
     } catch (e) {
       throw new Error(e);
     }

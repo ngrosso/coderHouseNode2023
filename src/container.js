@@ -1,10 +1,10 @@
-import config from "./config/index.js";
-import { createContainer, asClass, Lifetime } from "awilix";
+import config from './config/index.js';
+import { createContainer, asClass, Lifetime } from 'awilix';
 
-import ProductMongooseRepository from "./data/repositories/mongoose/productMongooseRepository.js";
-import CartMongooseRepository from "./data/repositories/mongoose/cartMongooseRepository.js";
-import UserMongooseRepository from "./data/repositories/mongoose/userMongooseRepository.js";
-import TicketMongooseRepository from "./data/repositories/mongoose/ticketMongooseRepository.js";
+import ProductMongooseRepository from './data/repositories/mongoose/productMongooseRepository.js';
+import CartMongooseRepository from './data/repositories/mongoose/cartMongooseRepository.js';
+import UserMongooseRepository from './data/repositories/mongoose/userMongooseRepository.js';
+import TicketMongooseRepository from './data/repositories/mongoose/ticketMongooseRepository.js';
 
 const container = createContainer();
 

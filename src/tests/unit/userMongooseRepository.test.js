@@ -1,6 +1,6 @@
 import config from '../../config/index.js';
 import { faker } from '@faker-js/faker';
-import DbFactory from "../../data/factories/dbFactory.js";
+import DbFactory from '../../data/factories/dbFactory.js';
 import UserMongooseRepository from '../../data/repositories/mongoose/userMongooseRepository';
 
 const userRepository = new UserMongooseRepository();

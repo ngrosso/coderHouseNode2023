@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== "production"){
+if(process.env.NODE_ENV !== 'production'){
   const dotenv = await import('dotenv')
   dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 }

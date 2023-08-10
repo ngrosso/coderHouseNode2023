@@ -1,6 +1,6 @@
-import { verifyToken } from "../../shared/auth.js";
-import config from "../../config/index.js";
-import CartManager from "../../domain/managers/cart.manager.js";
+import { verifyToken } from '../../shared/auth.js';
+import config from '../../config/index.js';
+import CartManager from '../../domain/managers/cart.manager.js';
 
 
 export class CartController {
@@ -119,7 +119,7 @@ export const purchaseCart = async (req, res) => {
   } catch (e) {
     req.logger.error(e);
     let error = e
-    if (e.message != undefined && e.message != null && e.message != "" && e.message != {} && e.message != []) {
+    if (e.message != undefined && e.message != null && e.message != '' && e.message != {} && e.message != []) {
       error = e.message
     }
     res.status(400).json({ success: false, error: error });

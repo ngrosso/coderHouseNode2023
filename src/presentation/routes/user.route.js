@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import auth from "../middlewares/auth.middleware.js";
-import admin from "../middlewares/admin.middleware.js";
-import { list, deleteOne, getOne, save, update } from "../../presentation/controllers/user.controller.js";
+import auth from '../middlewares/auth.middleware.js';
+import admin from '../middlewares/admin.middleware.js';
+import { list, deleteOne, getOne, save, update } from '../../presentation/controllers/user.controller.js';
 
 const usersRouter = Router();
 

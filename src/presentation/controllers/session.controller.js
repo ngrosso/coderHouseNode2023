@@ -1,7 +1,7 @@
-import UserManager from "../../domain/managers/user.manager.js";
-import { verifyToken } from "../../shared/auth.js";
-import { createHash, isValidPassword, generateToken } from "../../shared/auth.js";
-import { forgotPasswordMailer } from "../../shared/mailer.js";
+import UserManager from '../../domain/managers/user.manager.js';
+import { verifyToken } from '../../shared/auth.js';
+import { createHash, isValidPassword, generateToken } from '../../shared/auth.js';
+import { forgotPasswordMailer } from '../../shared/mailer.js';
 
 
 export const login = async (req, res) => {
@@ -14,7 +14,7 @@ export const login = async (req, res) => {
 
     const manager = new UserManager();
     const user = await manager.getOneByEmail(email);
-    const role = (user.admin) ? "Admin" : "User";
+    const role = (user.admin) ? 'Admin' : 'User';
     if (!user) {
       throw new Error('User not found.');
     }
@@ -100,7 +100,7 @@ export const forgotPassword = async (req, res) => {
 
 export const forgotPasswordView = async (req, res) => {
   const { token } = req.query;
-  res.render('forgot-password', { title: "Password Reset", token: token });
+  res.render('forgot-password', { title: 'Password Reset', token: token });
 }
 
 export const changeForgotPassword = async (req, res) => {
@@ -108,7 +108,7 @@ export const changeForgotPassword = async (req, res) => {
   const manager = new UserManager();
 
   try {
-    if (password !== repeatPassword) throw new Error("Passwords don't match")
+    if (password !== repeatPassword) throw new Error("Passwords don't match");
     const { user } = await verifyToken(token);
     const dto = {
       email: user.email,

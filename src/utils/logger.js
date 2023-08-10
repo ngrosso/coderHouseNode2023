@@ -13,12 +13,12 @@ const logLevels = {
 };
 
 const logColors = {
-  fatal: "red",
-  error: "orange",
-  warn: "yellow",
-  info: "cyan",
-  http: "darkblue",
-  debug: "green"
+  fatal: 'red',
+  error: 'orange',
+  warn: 'yellow',
+  info: 'cyan',
+  http: 'darkblue',
+  debug: 'green'
 }
 //winston.addColors(logColors);
 

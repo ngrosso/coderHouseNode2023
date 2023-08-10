@@ -1,4 +1,4 @@
-import container from "../../container.js";
+import container from '../../container.js';
 
 class UserManager {
   constructor() {

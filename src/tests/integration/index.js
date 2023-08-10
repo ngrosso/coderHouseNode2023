@@ -1,7 +1,7 @@
-import config from "../../config/index.js";
+import config from '../../config/index.js';
 
-import AppFactory from "../../presentation/factories/appFactory.js";
-import DbFactory from "../../data/factories/dbFactory.js";
+import AppFactory from '../../presentation/factories/appFactory.js';
+import DbFactory from '../../data/factories/dbFactory.js';
 
 const initServer = async () => {
   const db = DbFactory.create(config.DB_TYPE);
