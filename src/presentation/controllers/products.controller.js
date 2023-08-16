@@ -30,10 +30,17 @@ export const getOne = async (req, res) => {
 };
 
 export const create = async (req, res) => {
+  const { accessToken } = req.cookies;
+  const { user } = await verifyToken(accessToken);
   const product = req.body;
   const manager = new ProductManager();
   try {
-    const newProduct = await manager.create(product);
+    let newProduct = undefined
+    if (user.premium) {
+      newProduct = await manager.create(user.email, product);
+    } else {
+      newProduct = await manager.create(undefined, product)
+    }
     res.status(201).json({ succcess: true, data: newProduct });
   } catch (e) {
     req.logger.error(e);
@@ -46,6 +53,8 @@ export const update = async (req, res) => {
   const product = req.body;
   const manager = new ProductManager();
   try {
+    const foundProduct = manager.getOne(id);
+    await checkOwnership(req.cookies.accessToken, foundProduct);
     const result = await manager.update(id, product);
     res.status(202).json({ succcess: true, data: result });
   } catch (e) {
@@ -58,6 +67,8 @@ export const remove = async (req, res) => {
   const { id } = req.params;
   const manager = new ProductManager();
   try {
+    const foundProduct = manager.getOne(id);
+    await checkOwnership(req.cookies.accessToken, foundProduct);
     const result = await manager.remove(id);
     res.status(200).json({ succcess: true, data: result });
   } catch (e) {
@@ -65,5 +76,10 @@ export const remove = async (req, res) => {
     res.status(400).json({ succcess: false, error: e.message });
   }
 };
+
+const checkOwnership = async (accessToken, product) => {
+  const { user } = await verifyToken(accessToken);
+  if (user.email !== product.owner || !user.admin) res.status(403).json({ success: false, error: "User doesn't own the product" });
+}
 
 export default ProductsContoller;

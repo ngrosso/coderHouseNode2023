@@ -27,8 +27,9 @@ class ProductManager {
 
   }
 
-  async create(product) {
+  async create(owner,product) {
     await this.validateFormat(product);
+    product.owner = owner;
     return this.productRepository.create(product);
 
   }

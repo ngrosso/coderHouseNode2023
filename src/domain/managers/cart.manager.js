@@ -31,11 +31,12 @@ class CartManager {
     return cart;
   }
 
-  async insertProduct(cid, pid, quantity) {
+  async insertProduct(cid, pid, quantity, owner) {
     const cart = await this.cartRepository.getOne(cid);
     const product = await this.productRepository.findOne(pid);
-    if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
+    if (!cart) throw new CartDoesntExistError(cid);
+    if (product.owner === owner) throw new Error("Product owner can't buy his own product");
     const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
     if (cartProduct) {
       cartProduct.quantity += quantity;

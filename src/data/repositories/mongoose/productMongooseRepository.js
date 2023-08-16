@@ -19,6 +19,7 @@ class ProductMongooseRepository {
         code: document.code,
         stock: document.stock,
         category: document.category,
+        owner: document.owner,
         status: document.status
       })),
       ...rest
@@ -38,6 +39,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -54,6 +56,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -71,6 +74,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -93,6 +97,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -110,6 +115,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }

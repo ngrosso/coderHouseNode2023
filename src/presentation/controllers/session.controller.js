@@ -18,13 +18,15 @@ export const login = async (req, res) => {
     if (!user) {
       throw new Error('User not found.');
     }
-    const isHashedPassword = await isValidPassword(password, user.password);
 
+    const isHashedPassword = await isValidPassword(password, user.password);
     if (!isHashedPassword) {
       return res.status(401).send({ success: false, message: 'Login failed, invalid password.' })
     }
-
     const accessToken = await generateToken(user);
+
+    user.lastConnection = new Date();
+    await manager.updateOne(user.id, user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
     res.status(200).send({ success: true, message: `${(role)} Login success!` });
@@ -35,7 +37,16 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.clearCookie('accessToken').send({ success: true, message: 'Logout ok!' });
+  const { user } = await verifyToken(req.cookies.accessToken);
+  const manager = new UserManager();
+  user.lastConnection = new Date();
+  try{
+    await manager.updateOne(user.id, user);
+    res.clearCookie('accessToken').send({ success: true, message: 'Logout ok!' });
+  }catch(e){
+    req.logger.error(e);
+    res.status(400).send({ success: false, message: 'Logout error!', data: e.message })
+  }
 
   // req.session.destroy(err => {
   //   if (!err) {
@@ -65,18 +76,19 @@ export const signup = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body; //TODO: que sea el usuario logueado, password confirmation, email extraido del token req.email
+  const { user } = await verifyToken(req.cookies.accessToken);
   const manager = new UserManager();
 
   try {
     const dto = {
-      email,
+      email: user.email,
       password: await createHash(password)
     };
 
-    const user = await manager.changePassword(dto);
+    const changedUserPw = await manager.changePassword(dto);
 
-    res.status(200).send({ success: true, message: 'User change password.', data: user });
+    res.status(200).send({ success: true, message: 'User change password.', data: changedUserPw });
   } catch (e) {
     req.logger.error(e);
     res.status(400).send({ success: false, message: 'User change password error.', data: e });
@@ -91,7 +103,7 @@ export const forgotPassword = async (req, res) => {
     const user = await manager.getOneByEmail(email);
     const accessToken = await generateToken(user);
     const mail = await forgotPasswordMailer(email, accessToken);
-    res.status(200).send({ success: true, message: 'Recovery Mail sent.',data: mail.response });
+    res.status(200).send({ success: true, message: 'Recovery Mail sent.', data: mail.response });
   } catch (e) {
     req.logger.error(e);
     res.status(400).send({ success: false, message: 'Recovery Mail sent error.', data: e.message });
@@ -114,6 +126,7 @@ export const changeForgotPassword = async (req, res) => {
       email: user.email,
       password: await createHash(password)
     };
+    //TODO: encapsular DTO
 
     const userDoc = await manager.changePassword(dto);
 

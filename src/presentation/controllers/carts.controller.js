@@ -43,11 +43,13 @@ export const findOne = async (req, res) => {
 }
 
 export const insertProduct = async (req, res) => {
+  const { accessToken } = req.cookies;
+  const { user } = await verifyToken(accessToken);
   const { cid, pid } = req.params;
   const { quantity } = req.body;
   const manager = new CartManager();
   try {
-    const cart = await manager.insertProduct(cid, pid, quantity);
+    const cart = await manager.insertProduct(cid, pid, quantity, user.email);
     res.status(201).json({ success: true, data: cart });
   } catch (e) {
     req.logger.error(e);
