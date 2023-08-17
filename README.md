@@ -3,7 +3,10 @@
 **Branch dev del proyecto final**
 
 ## Configuracion
-Usar `.env.example` para crear el archivo `.env` con las variables de entorno necesarias.
+Usar `.env.example` para crear el archivo `.env` con las variables de entorno necesarias. Revisar los scripts del package.json para entender el formato:
+- .env.dev
+- .env.test
+- .env.production
 
 ## Instalacion
 Para ejecutar el proyecto, es necesario tener instalado NodeJS, NPM y ejecutar el siguiente comando.
