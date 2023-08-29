@@ -14,7 +14,7 @@ export const create = async (req, res) => {
     const newCart = await manager.create(user.id);
     res.status(201).json({ success: true, data: newCart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -25,7 +25,7 @@ export const list = async (req, res) => {
     const cartList = await manager.list()
     res.status(200).json({ success: true, data: cartList });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -37,7 +37,7 @@ export const findOne = async (req, res) => {
     const cart = await manager.findOne(cid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -52,7 +52,7 @@ export const insertProduct = async (req, res) => {
     const cart = await manager.insertProduct(cid, pid, quantity, user.email);
     res.status(201).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -65,7 +65,7 @@ export const updateCart = async (req, res) => {
     const cart = await manager.updateCart(cid, products);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -78,7 +78,7 @@ export const updateProduct = async (req, res) => {
     const cart = await manager.updateProduct(cid, pid, quantity);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -90,7 +90,7 @@ export const removeCart = async (req, res) => {
     const cart = await manager.removeCart(cid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -102,7 +102,7 @@ export const removeProduct = async (req, res) => {
     const cart = await manager.removeProduct(cid, pid);
     res.status(200).json({ success: true, data: cart });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     res.status(400).json({ success: false, error: e.message });
   }
 }
@@ -119,7 +119,7 @@ export const purchaseCart = async (req, res) => {
     const { cart, ticket } = await manager.purchaseCart(cid, user.email);
     res.status(201).json({ success: true, data: { cart: cart, ticket: ticket } });
   } catch (e) {
-    req.logger.error(e);
+    req.logger.error(e.message);
     let error = e
     if (e.message != undefined && e.message != null && e.message != '' && e.message != {} && e.message != []) {
       error = e.message

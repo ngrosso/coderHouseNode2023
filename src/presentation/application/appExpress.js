@@ -19,7 +19,7 @@ class AppExpress {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-    this.app.use(express.static('public'));
+    this.app.use(express.static(resolve('src/public')));
     this.app.use(addLogger);
 
     const viewsPath = resolve('src/public/views');
