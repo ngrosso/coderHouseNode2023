@@ -6,9 +6,10 @@
 - [ ] Implementar login validation
 - [ ] Implementar middleware de Error handler con zod
 - [ ] Implementar docker
-- [ ] Implementar usuario premium
+- [x] Implementar usuario premium
 - [ ] Agregar mas casos de prueba para los endpoints
-- [ ] Revisar logs quue no funcionan
+- [x] Revisar logs que no funcionan
+- [ ] Agregar uso de multer para profile y products
 
 ## Apuntes de la entrega final del profe
 - [ ] 1. API Users y API Roles. En donde Se necesita el comando principal para agregar un usuario administrador. (Tendria que agregar un user nuevo y con el role admin.) El role Admin pueden ignorarlo en caso de que esten usando una propiedad llamada isAdmin. 
