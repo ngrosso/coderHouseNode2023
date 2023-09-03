@@ -1,0 +1,157 @@
+#FIXME: Los ejemplos aparecen feos y parece que en 6 años sigue sin resolverse https://github.com/swagger-api/swagger-ui/issues/3954
+paths:
+  /api/carts/:
+    get:
+      summary: Obtiene una lista con todos los carritos
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Los carritos fueron obtenidos de forma satisfactoria
+          content:
+            application/json:
+              schemas:
+                type: object
+                items:
+                  $ref: "#/definitions/Cart"
+        "403":
+          description: Hubo un error de autenticacion
+        "500":
+          description: Hubo un error interno del servidor
+    post:
+      summary: Agrega un carrito vinculandose con el usuario
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Carrito creado correctamente
+        "400":
+          description: La solicitud de creacion no fue satisfactoria, dado a existencia de carrito vinculado o algun problema de parametros
+        "403":
+          description: Hubo un error de autenticacion
+        "500":
+          description: Hubo un error interno del servidor
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id del carrito que se desea obtener
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Carrito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/ProductQuantity"
+
+definitions:
+  Cart:
+    type: object
+    properties:
+      success:
+        type: Boolean
+        description: Exito o no de la respuesta
+      data:
+        type: Array
+        items:
+          $ref: "#/components/schemas/CartData"
+    example:
+      succcess: true
+      data:
+        $ref: "#/components/schemas/CartData"
+  ProductQuantity:
+    type: object
+    properties:
+      quantity:
+        type: integer
+        description: Cantidad de productos en el carrito
+      product:
+        type: object
+        schema:
+          $ref: "#/definitions/Product"
+    example:
+      quantity: 20
+      product:
+        $ref: "#/definitions/Product"
+  Product:
+    type: object
+    properties:
+      id:
+        type: ObjectId
+        description: Id autogenerado por mongo
+      title:
+        type: String
+        description: Nombre del producto
+      description:
+        type: String
+        description: Descripcion del producto
+      price:
+        type: Number
+        description: Precio del producto
+      thumbnail:
+        type: Array
+        items:
+          type: String
+        description: Arreglo de urls con imagenes del producto
+      code:
+        type: String
+        description: Codigo de producto
+      stock:
+        type: Number
+        description: Cantidad de productos disponibles
+      category:
+        type: String
+        description: Categoria del producto
+      status:
+        type: Boolean
+        description: Disponibilidad del producto
+    example:
+      id: 645839f963zbc58233a53074
+      title: Te de hierbas patagonicas
+      description: Te verde de hierbas de jazmin cultivados en provincias patagonicas
+      price: 1800
+      thumbnail:
+        [
+          https://kikimarket.com.ar/wp-content/uploads/2021/04/te-verde-con-jazmin-x-20-saq-patagonia-kiki-market-tienda-natural-dietetica-herboristeria-villa-carlos-paz.jpg,
+        ]
+      code: asd123
+      stock: 250
+      category: Alimentos y Bebidas
+      status: true
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CartData:
+      type: object
+      properties:
+        id:
+          type: String
+          description: Id del carrito
+        products:
+          type: Array
+          description: Array de productos y su cantidad
+          items:
+            $ref: "#/definitions/ProductQuantity"
+      example:
+        id: 645829q963zbc28233e53074
+        products:
+          $ref: "#/definitions/ProductQuantity"

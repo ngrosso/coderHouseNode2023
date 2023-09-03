@@ -1,11 +1,10 @@
-import ProductSchema from "../../models/product.model.js";
-import Product from "../../../domain/entities/product.js";
+import ProductSchema from '../../models/product.model.js';
+import Product from '../../../domain/entities/product.js';
 
 class ProductMongooseRepository {
 
   async find(params) {
     const { query, page, limit, sort } = params;
-    console.log(params);
 
     const productsDocument = await ProductSchema.paginate({ $and: [{ status: true }, query] }, { page, sort: { price: sort }, limit });
     const { docs, ...rest } = productsDocument;
@@ -20,6 +19,7 @@ class ProductMongooseRepository {
         code: document.code,
         stock: document.stock,
         category: document.category,
+        owner: document.owner,
         status: document.status
       })),
       ...rest
@@ -39,6 +39,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -55,6 +56,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -72,6 +74,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -94,6 +97,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }
@@ -111,6 +115,7 @@ class ProductMongooseRepository {
       code: productDocument.code,
       stock: productDocument.stock,
       category: productDocument.category,
+      owner: productDocument.owner,
       status: productDocument.status
     })
   }

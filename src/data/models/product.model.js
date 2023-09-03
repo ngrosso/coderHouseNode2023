@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
+import mongoose, { Schema } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const ProductCollection = 'products';
 
@@ -11,6 +11,7 @@ const ProductSchema = new Schema({
   code: { type: Schema.Types.String, required: true },
   stock: { type: Schema.Types.Number, required: true },
   category: { type: Schema.Types.String, required: true },
+  owner: { type: Schema.Types.String, required: true, default: "admin" },
   status: { type: Schema.Types.Boolean, required: true, default: true },
 });
 

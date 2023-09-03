@@ -1,9 +1,9 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 const CartCollection = 'carts';
 
 const ProductRelationSchema = new Schema({
-  product: { type: Schema.Types.ObjectId, ref: "products", index: true },
+  product: { type: Schema.Types.ObjectId, ref: 'products', index: true },
   quantity: { type: Schema.Types.Number, default: 1 }
 });
 

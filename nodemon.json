@@ -2,12 +2,14 @@
   "verbose": true,
   "ignore": [
     ".git",
-    "node_modules/**/node_modules"
+    "node_modules/**/node_modules",
+    "src/public/images/*"
   ],
   "watch": [
-    "src/*"
+    "src/*",
+    "docs/*"
   ],
   "exec": "NODE_ENV=dev node src/index.js --trace-warnings",
   "legacyWatch": true,
-  "ext": "js, handlebars,css"
+  "ext": "js, handlebars,css,yaml"
 }

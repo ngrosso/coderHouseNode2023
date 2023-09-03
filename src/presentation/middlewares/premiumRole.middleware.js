@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import config from '../../config/index.js';
 
-const auth = (req, res, next) => {
+const premiumUser = (req, res, next) => {
   const authHeader = req.headers.authorization ?? `Bearer ${req.cookies.accessToken}`;
 
   if (!authHeader) {
@@ -12,7 +12,7 @@ const auth = (req, res, next) => {
   const token = authHeader.split(' ')[1]; // Bearer tokenString(
 
   jwt.verify(token, config.JWT_PRIVATE_KEY, (error, credentials) => {
-    if (error) {
+    if (error || !credentials.user.premium) {
       req.logger.error('Authentication error');
       return res.status(403).send({ success: false, error: 'Authentication error' });
     }
@@ -22,4 +22,4 @@ const auth = (req, res, next) => {
   });
 }
 
-export default auth;
+export default premiumUser;

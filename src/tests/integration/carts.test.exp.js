@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import supertest from 'supertest';
 import initServer from './index.js';
+import { logger } from '../../utils/logger.js'
 
 describe('Carts API Tests', () => {
 
@@ -20,7 +21,7 @@ describe('Carts API Tests', () => {
   afterAll(async () => {
     await testContext.db.close();
     await testContext.requester.app.close();
-    console.log('server closed');
+    logger.info('server closed');
   });
 
   // test('POST /api/sessions/signup should create a user for testing Carts', async () => {
