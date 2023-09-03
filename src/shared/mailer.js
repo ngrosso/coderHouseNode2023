@@ -10,17 +10,24 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-export const sendMail = async (targetMail, ticket, cart) => {
+export const sendMail = async (targetMail, ticket, purchased, stillInCart ,paymentUrl) => {
   const subjectText = 'Order confirmation from The Coffeeshop'
   const body = `
   <html>
-    <h1>Thank you for your purchase</h1>
-    <p>Your order number ${ticket.code} has been recieved<p>
+    <h1>One last Step!</h1>
+    <p>Your order number ${ticket.code} will be recieved once you complete the payment<p>
+    <p>Click on the following link to complete the payment</p>
+    <a href='${paymentUrl}'>Complete payment</a>
     <p>Order details:</p>
     <ul>
-      ${cart.products.map(product => `<li>${product.quantity}x ${product.product.title} --- Unit Price $${product.product.price} = $${product.product.price * product.quantity}</li>`)}
+      ${purchased.forEach(product => `<li>${product.quantity}x ${product.product.title} --- Unit Price $${product.product.price} = $${product.product.price * product.quantity}</li>`)}
     </ul>
-    <p>Total: ${ticket.amount}</p>
+    <p>Total: $${ticket.amount}</p>
+    <br>
+    ${stillInCart.length > 0 ? `<h3>Some products are out of stock</h3>` : ''}
+    <ul>
+    ${stillInCart.forEach(product => `<li>${product.quantity}x ${product.product.title} --- Unit Price $${product.product.price} = $${product.product.price * product.quantity}</li>`)}
+    </ul>
   </html>`
 
   return await transporter.sendMail({

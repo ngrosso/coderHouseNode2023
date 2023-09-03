@@ -3,6 +3,8 @@ import container from '../../container.js';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { sendMail } from '../../shared/mailer.js';
+import Stripe from 'stripe';
+import config from '../../config/index.js';
 class CartManager {
   constructor() {
     this.productRepository = container.resolve('ProductRepository');
@@ -89,7 +91,7 @@ class CartManager {
   async removeCart(uid, cid) {
     const cart = await this.cartRepository.findOne(cid);
     if (!cart) throw new CartDoesntExistError(cid);
-    await this.UserMongooseDao.removeCart(uid, cid);
+    await this.UserMongooseDao.removeCart(uid);
     await this.cartRepository.remove(cid);
     return cart;
   }
@@ -114,16 +116,36 @@ class CartManager {
     const filteredCartResultLength = cartResults.length;
     if (cartResultLength == 0 && filteredCartResultLength == 0) throw new Error('Cart is empty');
     if (cartResultLength == filteredCartResultLength) throw ({ 'cart': cartResults });
+    const validProducts = cart.products.filter(product => !JSON.stringify(cartResults).includes(product.product.id.toHexString()));
+    const rejectedProducts = cart.products.filter(product => JSON.stringify(cartResults).includes(product.product.id.toHexString()));
     const ticket = await this.ticketRepository.create({
       code: nanoid(),
       purchaseDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      amount: cart.products
-        .filter(product => !JSON.stringify(cartResults).includes(product.product.id.toHexString()))
-        .reduce((acc, product) => acc + product.quantity * product.product.price, 0).toFixed(2),
+      amount: validProducts.reduce((acc, product) => acc + product.quantity * product.product.price, 0).toFixed(2),
       purchaser: email
     });
-    await sendMail(email, ticket, cart);
-    return ({ 'ticket': ticket, 'cart': cartResults });
+
+    const stripe = new Stripe(config.STRIPE_SECRET);
+
+    const stripeSession = await stripe.checkout.sessions.create({
+      line_items: validProducts.map(product => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: product.product.title,
+            description: product.product.description,
+          },
+          unit_amount: product.product.price * 100,
+        },
+        quantity: product.quantity,
+      })),
+      mode: 'payment',
+      customer_email: email,
+      success_url: `http://${config.HOST_URL}${config.PORT}/api/carts/success?ticket=${ticket.id}`,
+      cancel_url: `http://${config.HOST_URL}${config.PORT}/api/carts/cancel?ticket=${ticket.id}`,
+    });
+    await sendMail(email, ticket, validProducts, rejectedProducts, stripeSession.url);
+    return ({ 'ticket': ticket, 'cart': cartResults, 'paymentLink': stripeSession.url });
   }
 }
 
