@@ -25,7 +25,7 @@ export const login = async (req, res) => {
     }
     const accessToken = await generateToken(user);
 
-    user.lastConnection = new Date();
+    user.lastConnection = Date.now();
     await manager.updateOne(user.id, user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
@@ -39,22 +39,14 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   const { user } = await verifyToken(req.cookies.accessToken);
   const manager = new UserManager();
-  user.lastConnection = new Date();
-  try{
+  user.lastConnection = Date.now();
+  try {
     await manager.updateOne(user.id, user);
     res.clearCookie('accessToken').send({ success: true, message: 'Logout ok!' });
-  }catch(e){
+  } catch (e) {
     req.logger.error(e.message);
     res.status(400).send({ success: false, message: 'Logout error!', data: e.message })
   }
-
-  // req.session.destroy(err => {
-  //   if (!err) {
-  //     return res.status(200).send({ success: true, message: 'Logout ok!' });
-  //   }
-
-  //   res.status(400).send({ success: false, message: 'Logout error!', data: err })
-  // });
 };
 
 export const signup = async (req, res) => {
@@ -63,15 +55,26 @@ export const signup = async (req, res) => {
   try {
     const dto = {
       ...req.body,
-      password: await createHash(req.body.password)
+      password: await createHash(req.body.password),
+      lastConnection: Date.now(),
+      cart: undefined,
+      admin: false,
+      premium: false,
+      documents: [],
+      status: true
     }
 
-    const user = await manager.create(dto);
+    const userDoc = await manager.create(dto);
+
+    const user = {
+      ...userDoc,
+      lastConnection: new Date(userDoc.lastConnection)
+    }
 
     res.status(201).send({ success: true, message: 'User created.', data: user });
   } catch (e) {
     req.logger.error(e.message);
-    res.status(400).send({ success: false, message: 'User created error.', data: e });
+    res.status(400).send({ success: false, message: 'User created error.', data: e.message });
   }
 };
 
