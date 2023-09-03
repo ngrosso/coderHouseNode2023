@@ -1,4 +1,5 @@
 import container from '../../container.js';
+import { createHash } from '../../shared/auth.js';
 
 class UserManager {
   constructor() {
@@ -18,7 +19,7 @@ class UserManager {
   }
 
   async create(data) {
-    const user = await this.userRepository.create(data);
+    const user = await this.userRepository.create({ ...data, password: await createHash(data.password) });
 
     return { ...user, password: undefined };
   }
@@ -37,6 +38,10 @@ class UserManager {
 
     return this.userRepository.updateOne(user.id, user);
 
+  }
+
+  async removeInactiveUsers() {
+    return this.userRepository.removeInactiveUsers();
   }
 }
 

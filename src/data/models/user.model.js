@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
+import uniquevalidator from 'mongoose-unique-validator';
 
 const userCollection = 'users';
 
@@ -15,12 +16,14 @@ const UserSchema = new Schema({
   age: { type: Schema.Types.Number },
   password: { type: Schema.Types.String },
   cart: { type: Schema.Types.ObjectId, ref: 'carts' },
-  lastConnection: { type: Schema.Types.Date },
+  lastConnection: { type: Schema.Types.Number },
   admin: { type: Schema.Types.Boolean, default: false },
   premium: { type: Schema.Types.Boolean, default: false },
-  documents: { type: [DocumentsSchema] }
+  documents: { type: [DocumentsSchema] },
+  status: { type: Schema.Types.Boolean, default: true}
 });
 
 UserSchema.plugin(paginate);
+UserSchema.plugin(uniquevalidator);
 
 export default mongoose.model(userCollection, UserSchema);

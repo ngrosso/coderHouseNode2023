@@ -1,5 +1,6 @@
 import UserManager from '../../domain/managers/user.manager.js';
 import config from '../../config/index.js';
+import task from '../../utils/cron.js';
 
 export const list = async (req, res) => {
   const { limit, page } = req.query;
@@ -109,7 +110,36 @@ export const addDocument = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Documents uploaded successfully" })
   } catch (e) {
-    req.logger.error(e.message);
+    req.logger.error(e.stacktrace);
     res.status(400).json({ success: false, message: e.message })
   }
 }
+
+export const removeInactiveUsers = async (req, res) => {
+  const manager = new UserManager();
+  try {
+    const users = await manager.removeInactiveUsers();
+    res.status(200).json({ success: true, message: (users.length > 0) ? `${users.length} inactive users deleted successfully` : 'No inactive users found', data: users })
+  } catch (e) {
+    req.logger.error(e.message);
+    res.status(500).json({ success: false, message: e.message })
+  }
+}
+
+export const taskRemoveInactiveUsers = async (req, res) => {
+
+  try {
+    if (task._scheduler.timeout) {
+      task.stop();
+      res.status(200).json({ success: true, message: "Cron: Remove inactive users schedule stopped" })
+    } else {
+      task.start();
+      res.status(200).json({ success: true, message: "Cron: Remove inactive users schedule started" })
+    }
+  } catch (e) {
+    req.logger.error(e.message);
+    res.status(500).json({ success: false, message: e.message })
+  }
+}
+
+
