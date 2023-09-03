@@ -20,7 +20,7 @@ const logColors = {
   http: 'darkblue',
   debug: 'green'
 }
-//winston.addColors(logColors);
+//winston.addColors(logColors); //FIXME: rompe, si se habilitan colores, no se entiende por que
 
 const myFormat = winston.format.printf(({ level, message, timestamp }) => {
   return `${timestamp} -- [${level}]\t| ${message}`;
