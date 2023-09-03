@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production') {
   const dotenv = await import('dotenv')
   dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 }
@@ -12,8 +12,10 @@ const config = {
   JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
   MAILER_USER: process.env.MAILER_USER,
   MAILER_PASS: process.env.MAILER_PASS,
+  STRIPE_SECRET: process.env.STRIPE_SECRET,
   HOST_URL: process.env.HOST_URL,
-  PORT: process.env.PORT
+  PORT: process.env.PORT,
+  ACCOUNT_EXPIRE_MINUTES: process.env.ACCOUNT_EXPIRE_MINUTES
 }
 
 export default config;
