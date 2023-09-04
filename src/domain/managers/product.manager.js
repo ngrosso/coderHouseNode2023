@@ -1,4 +1,6 @@
 import container from '../../container.js';
+import productCreateValidation from '../validators/products/productCreateValidation.js';
+
 
 class ProductManager {
 
@@ -28,7 +30,7 @@ class ProductManager {
   }
 
   async create(owner,product) {
-    await this.validateFormat(product);
+    await productCreateValidation.parseAsync(product);
     product.owner = owner;
     return this.productRepository.create(product);
 
@@ -46,16 +48,8 @@ class ProductManager {
     return product;
   }
 
-  async validateFormat(product) {
-    const { title, description, price, thumbnail, code, stock, status, category } = product;
-    if (typeof (title) !== 'string') throw new InvalidFormatError('title')
-    if (typeof (description) !== 'string') throw new InvalidFormatError('description')
-    if (typeof (price) !== 'number') throw new InvalidFormatError('price')
-    if (typeof (thumbnail) !== 'object') throw new InvalidFormatError('thumbnail')
-    if (typeof (code) !== 'string') throw new InvalidFormatError('code')
-    if (typeof (stock) !== 'number') throw new InvalidFormatError('stock');
-    if (typeof (status) !== 'boolean') throw new InvalidFormatError('status');
-    if (typeof (category) !== 'string') throw new InvalidFormatError('category');
+  async existanceValidator(product) {
+    const { code } = product;  
     const productExists = await this.productRepository.findOneByCode(code);
 
     if (productExists) throw new RepeatedCodeError(code);

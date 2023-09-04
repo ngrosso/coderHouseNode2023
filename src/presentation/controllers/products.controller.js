@@ -1,4 +1,5 @@
 import ProductManager from '../../domain/managers/product.manager.js';
+import { verifyToken } from '../../shared/auth.js';
 
 class ProductsContoller {
 }
