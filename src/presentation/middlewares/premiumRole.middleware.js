@@ -12,12 +12,13 @@ const premiumUser = (req, res, next) => {
   const token = authHeader.split(' ')[1]; // Bearer tokenString(
 
   jwt.verify(token, config.JWT_PRIVATE_KEY, (error, credentials) => {
-    if (error || !credentials.user.premium) {
+    console.log(credentials)
+    if (error || (!credentials.user.premium && !credentials.user.admin)) {
       req.logger.error('Authentication error');
       return res.status(403).send({ success: false, error: 'Authentication error' });
     }
 
-    req.email = credentials.email;
+    req.userInfo = credentials.user;
     next();
   });
 }
