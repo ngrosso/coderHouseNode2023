@@ -1,0 +1,5 @@
+node_modules
+.vscode
+.coverage
+todo.md
+errors.log*
