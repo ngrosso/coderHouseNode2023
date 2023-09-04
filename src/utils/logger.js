@@ -30,7 +30,7 @@ export const logger = winston.createLogger({
   levels: logLevels,
   transports: [
     new winston.transports.Console({ level: configLevel, format: winston.format.combine(winston.format.colorize(), winston.format.timestamp(), myFormat) }), //FIXME; No quiere tomar los colores custom, ayuda!!
-    new winston.transports.File({ filename: './errors.log', level: 'error', format: winston.format.combine(winston.format.timestamp(), myFormat) })
+    new winston.transports.File({ filename: './errors.log', level: 'warn', format: winston.format.combine(winston.format.timestamp(), myFormat) })
   ]
 })
 
