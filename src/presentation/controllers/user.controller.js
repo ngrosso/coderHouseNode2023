@@ -2,7 +2,7 @@ import UserManager from '../../domain/managers/user.manager.js';
 import config from '../../config/index.js';
 import task from '../../utils/cron.js';
 
-export const list = async (req, res) => {
+export const list = async (req, res, next) => {
   const { limit, page } = req.query;
   const manager = new UserManager();
   try {
@@ -10,12 +10,11 @@ export const list = async (req, res) => {
 
     res.status(200).json({ success: true, data: users.docs, ...users, docs: undefined });
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message });
+    next(e);
   }
 };
 
-export const getOne = async (req, res) => {
+export const getOne = async (req, res, next) => {
   const { id } = req.params;
 
   const manager = new UserManager();
@@ -24,24 +23,22 @@ export const getOne = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'User found.', data: user });
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message });
+    next(e);
   }
 };
 
-export const save = async (req, res) => {
+export const save = async (req, res, next) => {
   const manager = new UserManager();
   try {
     const user = await manager.create(req.body);
 
     res.status(201).json({ success: true, message: 'User created.', data: user })
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message })
+    next(e);
   }
 };
 
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
   const { id } = req.params;
 
   const manager = new UserManager();
@@ -50,12 +47,11 @@ export const update = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'User updated.', data: result })
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message })
+    next(e)
   }
 };
 
-export const deleteOne = async (req, res) => {
+export const deleteOne = async (req, res, next) => {
   const { id } = req.params;
 
   const manager = new UserManager();
@@ -64,12 +60,11 @@ export const deleteOne = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'User deleted.' })
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message })
+    next(e)
   }
 };
 
-export const switchPremiumStatus = async (req, res) => {
+export const switchPremiumStatus = async (req, res, next) => {
   const { id } = req.params;
 
   const manager = new UserManager();
@@ -84,12 +79,11 @@ export const switchPremiumStatus = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'User premium role changed.', data: user })
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).json({ success: false, message: e.message })
+    next(e)
   }
 };
 
-export const addDocument = async (req, res) => {
+export const addDocument = async (req, res, next) => {
   const { id } = req.params;
 
   const docs = req.docs;
@@ -110,8 +104,7 @@ export const addDocument = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Documents uploaded successfully" })
   } catch (e) {
-    req.logger.error(e.stacktrace);
-    res.status(400).json({ success: false, message: e.message })
+    next(e)
   }
 }
 

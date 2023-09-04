@@ -1,5 +1,6 @@
 import container from '../../container.js';
 import { createHash } from '../../shared/auth.js';
+import userCreateValidation from '../validators/user/userCreateValidation.js';
 
 class UserManager {
   constructor() {
@@ -19,6 +20,8 @@ class UserManager {
   }
 
   async create(data) {
+    await userCreateValidation.parseAsync(data);
+
     const user = await this.userRepository.create({ ...data, password: await createHash(data.password) });
 
     return { ...user, password: undefined };
