@@ -19,4 +19,4 @@
 - [x] 2. Crear un cron con https://www.npmjs.com/package/node-cron para hacer eliminacion logica cada dos dias a los usuarios que no se hayan conectado. Crear un metodo en el manager del usuario para hacer la bajada logica. 
 - [x] 3. Flujo de compras (con checkout) pero sin vistas. 
 - [x] 4. Pueden usar glitch o railway para desplegar la aplicacion. 
-- [ ] 5. Entregar una collection de postman con todos los endpoints y los ejemplos. Tambien es posible entregarlo con swagger. 
+- [x] 5. Entregar una collection de postman con todos los endpoints y los ejemplos. Tambien es posible entregarlo con swagger. 
