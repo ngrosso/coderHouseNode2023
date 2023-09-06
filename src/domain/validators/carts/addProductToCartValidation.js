@@ -1,9 +1,7 @@
 import z from 'zod';
 
 const addProductToCartValidation = z.object({
-  email: z.string(),
-  password: z.string().min(6),
-  repeatPassword: z.string().min(6)
+  quantity: z.number().min(1),
 });
 
 export default addProductToCartValidation;
