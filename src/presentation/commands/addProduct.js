@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import ProductManager from '../../domain/managers/product.manager.js';
+import { logger } from '../../utils/logger.js';
 
 const AddProductCommand = new Command('addProduct');
 
@@ -26,12 +27,12 @@ AddProductCommand
       status: env.status === 'true',
     };
 
-    console.log("payload", payload)
+    logger.info(JSON.stringify(payload))
     const manager = new ProductManager();
-    const product= await manager.create("admin",payload);
+    const product = await manager.create("admin", payload);
 
     if (product) {
-      console.log('Product created successfully');
+      logger.info('Product created successfully');
     }
   });
 

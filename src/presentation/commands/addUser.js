@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import UserManager from '../../domain/managers/user.manager.js';
+import { logger } from '../../utils/logger.js';
 
 const AddUserCommand = new Command('addUser');
 
@@ -19,12 +20,12 @@ AddUserCommand
       admin: env.admin === 'true',
     };
 
-    console.log("payload", { ...payload, password: ">>>HIDDEN<<<" })
+    logger.info(JSON.stringify({ ...payload, password: ">>>HIDDEN<<<" }))
     const manager = new UserManager();
     const user = await manager.create(payload);
 
     if (user) {
-      console.log('User created successfully');
+      logger.info('User created successfully');
     }
   });
 

@@ -1,6 +1,7 @@
 import { exit } from 'shelljs';
 import { program } from 'commander';
 import config from './config/index.js';
+import { logger } from './utils/logger.js';
 
 import AddUser from "./presentation/commands/addUser.js";
 import AddProduct from "./presentation/commands/addProduct.js";
@@ -19,7 +20,7 @@ void (async () => {
     exit();
   }
   catch (error) {
-    await console.log(error);
+    logger.error(error.message)
     exit();
   }
 })();
