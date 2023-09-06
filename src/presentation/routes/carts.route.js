@@ -5,7 +5,7 @@ import { create, list, findOne, insertProduct, updateCart, updateProduct, remove
 
 const cartRouter = Router();
 
-cartRouter.get('/', auth, admin, list); // FIXME:Solo para pruebas internas y pruebas del tutor
+cartRouter.get('/', auth, admin, list);
 cartRouter.post('/', auth, create);
 cartRouter.get('/:cid', auth, findOne);
 cartRouter.put('/:cid', auth, updateCart);
