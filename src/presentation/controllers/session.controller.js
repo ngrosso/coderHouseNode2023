@@ -104,7 +104,7 @@ export const forgotPassword = async (req, res) => {
 
 export const forgotPasswordView = async (req, res) => {
   const { token } = req.query;
-  res.render('forgot-password', { title: 'Password Reset', token: token });
+  res.status(200).render('forgot-password', { title: 'Password Reset', token: token });
 }
 
 export const changeForgotPassword = async (req, res) => {
@@ -117,7 +117,7 @@ export const changeForgotPassword = async (req, res) => {
 
     const userDoc = await manager.changePassword({ email: user.email, password: password });
 
-    res.status(200).send({ success: true, message: 'User password changed.', data: userDoc });
+    res.status(200).render('change-password-success', { title: 'Password Reset Success', user: userDoc.firstName });
   } catch (e) {
     req.logger.error(e.message);
     res.status(400).send({ success: false, message: 'User password change error.', data: e.message });
