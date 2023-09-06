@@ -19,7 +19,6 @@ class CartManager {
 
   async findOne(cid) {
     const cart = await this.cartRepository.findOne(cid);
-    if (!cart) throw new CartDoesntExistError(cid);
     return cart;
   }
 
@@ -37,7 +36,6 @@ class CartManager {
     const cart = await this.cartRepository.getOne(cid);
     const product = await this.productRepository.findOne(pid);
     if (!product) throw new ProductDoesntExistError(pid);
-    if (!cart) throw new CartDoesntExistError(cid);
     if (product.owner === owner) throw new Error("Product owner can't buy his own product");
     const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
     if (cartProduct) {
@@ -54,8 +52,8 @@ class CartManager {
 
   async updateCart(cid, products) {
     const cart = await this.cartRepository.findOne(cid);
-    if (!cart) throw new CartDoesntExistError(cid);
     cart.products = [];
+    console.log(products[0].product.id)
     await products.forEach(async product => {
       const productInDb = await this.productRepository.findOne(product.product.id);
       if (!productInDb) throw new ProductDoesntExistError(product.produdct.id);
@@ -73,7 +71,6 @@ class CartManager {
   async updateProduct(cid, pid, quantity) {
     const cart = await this.cartRepository.getOne(cid);
     const product = await this.productRepository.findOne(pid);
-    if (!cart) throw new CartDoesntExistError(cid);
     if (!product) throw new ProductDoesntExistError(pid);
     const cartProduct = cart.products.find(cp => cp.product.toString() === product.id.toString());
     if (!cartProduct) throw new ProductDoesntExistError(`${pid} in cart: ${cid}`);
@@ -89,17 +86,15 @@ class CartManager {
   }
 
   async removeCart(uid, cid) {
-    const cart = await this.cartRepository.findOne(cid);
-    if (!cart) throw new CartDoesntExistError(cid);
-    await this.UserMongooseDao.removeCart(uid);
+    const cart = await this.cartRepository.getOne(cid);
+    await this.userRepository.removeCart(uid);
     await this.cartRepository.remove(cid);
     return cart;
   }
 
   async purchaseCart(cid, email) {
     const cart = await this.cartRepository.findOne(cid);
-    if (!cart) throw new CartDoesntExistError(cid);
-
+    if(cart.products.length == 0) throw new Error('Cart is empty');
     let cartResults = await Promise.all(cart.products.map(async product => {
       const productInDb = await this.productRepository.findOne(product.product.id);
       if (!productInDb) return ({ 'reason': "Product doesn't exist anymore", 'productId': product.product.id });
@@ -149,21 +144,10 @@ class CartManager {
   }
 }
 
-class CartDoesntExistError extends Error {
-  constructor(cid) {
-    super(`Cart Id:${cid} Not Found!`);
-  }
-}
 
 class ProductDoesntExistError extends Error {
   constructor(cid) {
     super(`Product Id:${cid} Not Found!`);
-  }
-}
-
-class FormatError extends Error {
-  constructor(param) {
-    super(`${param} has an incorrect format!`);
   }
 }
 

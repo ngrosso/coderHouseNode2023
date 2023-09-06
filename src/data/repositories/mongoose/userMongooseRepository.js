@@ -6,7 +6,7 @@ class UserMongooseRepository {
   async paginate(criteria) {
     const limit = criteria.limit || 10;
     const page = criteria.page || 1;
-    const userDocuments = await userSchema.paginate({}, { limit, page });
+    const userDocuments = await userSchema.paginate({ status: true }, { limit, page });
 
     userDocuments.docs = userDocuments.docs.map(userDocument => new User({
       id: userDocument._id,
@@ -55,20 +55,25 @@ class UserMongooseRepository {
 
   async getOneByEmail(email) {
     const userDocument = await userSchema.findOne({ email });
-    return {
-      id: userDocument?._id,
-      email: userDocument?.email,
-      admin: userDocument?.admin,
-      password: userDocument?.password,
-      cart: userDocument?.cart,
-      lastConnection: (userDocument.lastConnection) != undefined ? new Date(userDocument.lastConnection) : undefined,
-      premium: userDocument?.premium,
-      documents: userDocument?.documents.map(doc => ({
-        name: doc.name,
-        reference: doc.reference
-      })),
-      status: userDocument?.status
-    }
+    if (userDocument != null)
+      return {
+        id: userDocument?._id,
+        email: userDocument?.email,
+        firstName: userDocument?.firstName,
+        lastName: userDocument?.lastName,
+        age: userDocument?.age,
+        admin: userDocument?.admin,
+        password: userDocument?.password,
+        cart: userDocument?.cart,
+        lastConnection: (userDocument.lastConnection) != undefined ? new Date(userDocument.lastConnection) : undefined,
+        premium: userDocument?.premium,
+        documents: userDocument?.documents.map(doc => ({
+          name: doc.name,
+          reference: doc.reference
+        })),
+        status: userDocument?.status
+      }
+    return null;
   }
 
   async create(data) {
@@ -130,7 +135,7 @@ class UserMongooseRepository {
 
   async removeInactiveUsers() {
     const deltaTime = Date.now() - config.ACCOUNT_EXPIRE_MINUTES * 60000;
-    const query = { $and: [{ $or: [{ lastConnection: { $lt: 1693722010985 } }, { lastConnection: undefined }] }, { $or: [{ status: true }, { status: undefined }] }, { $or: [{ admin: { $exists: false } }, { admin: false }] }] }
+    const query = { $and: [{ $or: [{ lastConnection: { $lt: deltaTime } }, { lastConnection: undefined }] }, { $or: [{ status: true }, { status: undefined }] }, { $or: [{ admin: { $exists: false } }, { admin: false }] }] }
     const userDocuments = await userSchema.find(query);
     await userSchema.updateMany(query, { status: false });
 

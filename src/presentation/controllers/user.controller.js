@@ -1,6 +1,7 @@
 import UserManager from '../../domain/managers/user.manager.js';
 import config from '../../config/index.js';
 import task from '../../utils/cron.js';
+import { generateToken } from '../../shared/auth.js';
 
 export const list = async (req, res, next) => {
   const { limit, page } = req.query;
@@ -65,7 +66,7 @@ export const deleteOne = async (req, res, next) => {
 };
 
 export const switchPremiumStatus = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.userInfo.id;
 
   const manager = new UserManager();
   try {
@@ -76,7 +77,8 @@ export const switchPremiumStatus = async (req, res, next) => {
       throw new Error("Needs to add documentation first!")
     }
     await manager.updateOne(id, user);
-
+    const accessToken = await generateToken(user);
+    res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
     res.status(200).json({ success: true, message: 'User premium role changed.', data: user })
   } catch (e) {
     next(e)
@@ -84,7 +86,7 @@ export const switchPremiumStatus = async (req, res, next) => {
 };
 
 export const addDocument = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.userInfo.id;
 
   const docs = req.docs;
   const docsFolder = `http://${config.HOST_URL}${config.PORT}/images/documents`;
@@ -102,7 +104,7 @@ export const addDocument = async (req, res, next) => {
     user.documents = docsReferences;
     await manager.updateOne(id, user);
 
-    res.status(200).json({ success: true, message: "Documents uploaded successfully" })
+    res.status(202).json({ success: true, message: "Documents uploaded successfully" })
   } catch (e) {
     next(e)
   }
@@ -114,8 +116,7 @@ export const removeInactiveUsers = async (req, res) => {
     const users = await manager.removeInactiveUsers();
     res.status(200).json({ success: true, message: (users.length > 0) ? `${users.length} inactive users deleted successfully` : 'No inactive users found', data: users })
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(500).json({ success: false, message: e.message })
+    next(e);
   }
 }
 
@@ -130,8 +131,7 @@ export const taskRemoveInactiveUsers = async (req, res) => {
       res.status(200).json({ success: true, message: "Cron: Remove inactive users schedule started" })
     }
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(500).json({ success: false, message: e.message })
+    next(e);
   }
 }
 

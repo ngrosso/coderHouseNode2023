@@ -1,42 +1,37 @@
 import UserManager from '../../domain/managers/user.manager.js';
 import { verifyToken } from '../../shared/auth.js';
-import { createHash, isValidPassword, generateToken } from '../../shared/auth.js';
+import { isValidPassword, generateToken } from '../../shared/auth.js';
 import { forgotPasswordMailer } from '../../shared/mailer.js';
 
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    if (!email && !password) {
-      throw new Error('Email and Password invalid format.');
-    }
+    if (!email && !password) throw new Error('Email and Password invalid format.');
 
     const manager = new UserManager();
     const user = await manager.getOneByEmail(email);
+    if (!user) throw new InvalidUserPasswordError();
+    if (!user.status) throw new Error("User is not active.");
+
     const role = (user.admin) ? 'Admin' : 'User';
-    if (!user) {
-      throw new Error('User not found.');
-    }
 
     const isHashedPassword = await isValidPassword(password, user.password);
-    if (!isHashedPassword) {
-      return res.status(401).send({ success: false, message: 'Login failed, invalid password.' })
-    }
+    if (!isHashedPassword) throw new InvalidUserPasswordError();
     const accessToken = await generateToken(user);
 
     user.lastConnection = Date.now();
     await manager.updateOne(user.id, user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
-    res.status(200).send({ success: true, message: `${(role)} Login success!` });
+    res.status(200).send({ success: true, message: `${role} Login success!` });
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(401).send({ success: false, message: 'Login failed, invalid email or password.', data: e.message })
+    next(e)
   }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
   const { user } = await verifyToken(req.cookies.accessToken);
   const manager = new UserManager();
   user.lastConnection = Date.now();
@@ -44,8 +39,7 @@ export const logout = async (req, res) => {
     await manager.updateOne(user.id, user);
     res.clearCookie('accessToken').send({ success: true, message: 'Logout ok!' });
   } catch (e) {
-    req.logger.error(e.message);
-    res.status(400).send({ success: false, message: 'Logout error!', data: e.message })
+    next(e)
   }
 };
 
@@ -55,7 +49,6 @@ export const signup = async (req, res) => {
   try {
     const dto = {
       ...req.body,
-      password: await createHash(req.body.password),
       lastConnection: Date.now(),
       cart: undefined,
       admin: false,
@@ -79,17 +72,13 @@ export const signup = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
-  const { password } = req.body; //TODO: que sea el usuario logueado, password confirmation, email extraido del token req.email
-  const { user } = await verifyToken(req.cookies.accessToken);
+  const { password } = req.body;
+  const user = req.userInfo;
   const manager = new UserManager();
 
   try {
-    const dto = {
-      email: user.email,
-      password: await createHash(password)
-    };
 
-    const changedUserPw = await manager.changePassword(dto);
+    const changedUserPw = await manager.changePassword({ email: user.email, password: password });
 
     res.status(200).send({ success: true, message: 'User change password.', data: changedUserPw });
   } catch (e) {
@@ -125,13 +114,8 @@ export const changeForgotPassword = async (req, res) => {
   try {
     if (password !== repeatPassword) throw new Error("Passwords don't match");
     const { user } = await verifyToken(token);
-    const dto = {
-      email: user.email,
-      password: await createHash(password)
-    };
-    //TODO: encapsular DTO
 
-    const userDoc = await manager.changePassword(dto);
+    const userDoc = await manager.changePassword({ email: user.email, password: password });
 
     res.status(200).send({ success: true, message: 'User password changed.', data: userDoc });
   } catch (e) {
@@ -152,3 +136,9 @@ export const current = async (req, res) => {
     res.status(400).send({ success: false, data: e.message });
   }
 };
+
+class InvalidUserPasswordError extends Error {
+  constructor() {
+    super('Login failed, invalid user or password.');
+  }
+}

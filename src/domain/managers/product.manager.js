@@ -1,5 +1,6 @@
 import container from '../../container.js';
 import productCreateValidation from '../validators/products/productCreateValidation.js';
+import productUpdateValidation from '../validators/products/productUpdateValidation.js';
 
 
 class ProductManager {
@@ -29,17 +30,17 @@ class ProductManager {
 
   }
 
-  async create(owner,product) {
+  async create(owner, product) {
     await productCreateValidation.parseAsync(product);
+    await this.existanceValidator(product);
     product.owner = owner;
     return this.productRepository.create(product);
 
   }
 
   async update(id, product) {
-    await this.validateFormat(product);
-    await this.productRepository.update(id, product);
-    return await this.productRepository.findOneSpecial(id);
+    await productUpdateValidation.parseAsync(product);
+    return this.productRepository.update(id, product);
   }
 
   async remove(id) {
@@ -49,7 +50,7 @@ class ProductManager {
   }
 
   async existanceValidator(product) {
-    const { code } = product;  
+    const { code } = product;
     const productExists = await this.productRepository.findOneByCode(code);
 
     if (productExists) throw new RepeatedCodeError(code);

@@ -11,8 +11,8 @@ usersRouter.get('/:id', auth, admin, getOne);
 usersRouter.post('/', auth, admin, save);
 usersRouter.put('/:id', auth, admin, update);
 usersRouter.delete('/:id', auth, admin, deleteOne);
-usersRouter.post('/:id/premium/', auth, switchPremiumStatus)
 usersRouter.post('/:id/documents', auth, uploadDocs, addDocument)
+usersRouter.post('/:id/premium/', auth, switchPremiumStatus)
 usersRouter.delete('/', auth, admin, removeInactiveUsers)
 usersRouter.delete('/cron/toggle', auth, admin, taskRemoveInactiveUsers)
 
