@@ -13,6 +13,7 @@
 - [ ] Agregar Multer para productos y reemplace la forma que se manejan los thumbnails
 - [ ] Mejorar Readme
 - [ ] Email avisando la baja del producto al owner
+- [x] Login retorna token para asignar en variable asi safo de la cookie para los tests
 
 ## Apuntes de la entrega final del profe
 - [x] 1. API Users y API Roles. En donde Se necesita el comando principal para agregar un usuario administrador. (Tendria que agregar un user nuevo y con el role admin.) El role Admin pueden ignorarlo en caso de que esten usando una propiedad llamada isAdmin. 

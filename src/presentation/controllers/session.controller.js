@@ -25,7 +25,7 @@ export const login = async (req, res, next) => {
     await manager.updateOne(user.id, user);
 
     res.cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true });
-    res.status(200).send({ success: true, message: `${role} Login success!` });
+    res.status(200).send({ success: true, message: `${role} Login success!`, accessToken: accessToken });
   } catch (e) {
     next(e)
   }
