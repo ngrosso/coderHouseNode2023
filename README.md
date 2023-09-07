@@ -1,7 +1,9 @@
 # coderHouseNode2023
 
 **Branch main del proyecto final**
+
 Demo de main en railway con un ejemplo: https://ngrossocoder.up.railway.app/api/products
+
 Los ejemplos de Postman estan en `/docs`
 ## Configuracion
 Usar `.env.example` para crear el archivo `.env.{{stage}}` con las variables de entorno necesarias. Revisar los scripts del package.json para entender el formato:
