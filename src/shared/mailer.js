@@ -44,7 +44,7 @@ export const forgotPasswordMailer = async (targetMail, token) => {
   <html>
     <h1>Reset your password</h1>
     <p><strong>Click on the following link to reset your password</strong></p>
-    <a href='http://${config.HOST_URL}${config.PORT}/api/sessions/reset-password?token=${token}'>Reset password</a>
+    <a href='http://${config.HOST_URL}/api/sessions/reset-password?token=${token}'>Reset password</a>
     <h4 color='red'>Don't share it with anyone!!</h4>
   </html>`
   return await transporter.sendMail({

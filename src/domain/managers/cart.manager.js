@@ -136,8 +136,8 @@ class CartManager {
       })),
       mode: 'payment',
       customer_email: email,
-      success_url: `http://${config.HOST_URL}${config.PORT}/api/carts/success?ticket=${ticket.id}`,
-      cancel_url: `http://${config.HOST_URL}${config.PORT}/api/carts/cancel?ticket=${ticket.id}`,
+      success_url: `http://${config.HOST_URL}/api/carts/success?ticket=${ticket.id}`,
+      cancel_url: `http://${config.HOST_URL}/api/carts/cancel?ticket=${ticket.id}`,
     });
     await sendMail(email, ticket, validProducts, rejectedProducts, stripeSession.url);
     return ({ 'ticket': ticket, 'cart': cartResults, 'paymentLink': stripeSession.url });

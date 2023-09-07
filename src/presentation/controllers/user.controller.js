@@ -89,7 +89,7 @@ export const addDocument = async (req, res, next) => {
   const id = req.userInfo.id;
 
   const docs = req.docs;
-  const docsFolder = `http://${config.HOST_URL}${config.PORT}/images/documents`;
+  const docsFolder = `https://${config.HOST_URL}/images/documents`;
 
   const docsReferences = docs.map((file) => {
     return {
