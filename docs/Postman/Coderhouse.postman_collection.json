@@ -1,0 +1,735 @@
+{
+	"info": {
+		"_postman_id": "1ca9e541-4154-4b20-8e8e-adf03340984f",
+		"name": "Coderhouse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5957424"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/products?limit=1",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one product by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/products/64f7cad87fd7e6e0d8ff8e22",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"64f7cad87fd7e6e0d8ff8e22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Flan con dulce de leche4\",\n    \"description\": \"Riquisimo flan casero\",\n    \"price\": 20,\n    \"thumbnail\": [\n        \"http://dummyimage.com/171x100.png/5fa2dd/ffffff\",\n        \"http://dummyimage.com/171x100.png/5fa2dd/ffffff\"\n    ],\n    \"code\": \"zzz2de223\",\n    \"stock\": 400,\n    \"category\": \"Comidas\",\n    \"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/products/",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"title\": \"Flan con dulce de leche31\",\n        \"description\": \"hola que tal\",\n        \"price\": 20,\n        \"thumbnail\": [\n            \"http://dummyimage.com/171x100.png/5fa2dd/ffffff\",\n            \"http://dummyimage.com/171x100.png/5fa2dd/ffffff\"\n        ],\n        \"code\": \"zzzd31e23\",\n        \"stock\": 40202,\n        \"category\": \"Comidas2\",\n        \"status\": true\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/products/64f53aa84ae4846f2fdf8e03",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"64f53aa84ae4846f2fdf8e03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/products/64f7cad87fd7e6e0d8ff8e22",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"64f7cad87fd7e6e0d8ff8e22"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users/64f78fd8a3f0066efbae00f1",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64f78fd8a3f0066efbae00f1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Nicolas\",\n    \"lastName\": \"Grosso\",\n    \"age\": 20,\n    \"email\":\"nzgrosso3@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/users",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Nicolas\",\n    \"lastName\": \"Grosso\",\n    \"age\": 20,\n    \"password\": \"12345678\",\n    \"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/users/64f78fd8a3f0066efbae00f1",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64f78fd8a3f0066efbae00f1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users/64f792adef133a15345336d5",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64f792adef133a15345336d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add document to a user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "documents",
+									"type": "file",
+									"src": "/home/zephi/Downloads/comision 39740(1).png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/users/64f792adef133a15345336d5/documents",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64f792adef133a15345336d5",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switch user premium status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users/64f792adef133a15345336d5/premium",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64f792adef133a15345336d5",
+								"premium"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Inactive users (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRON Remove Inactive users (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/users/cron/toggle",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"cron",
+								"toggle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sessions",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"nzgrosso@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/sessions/login",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//const name = pm.variables.replaceIn('{{$randomFirstName}}')",
+									"pm.variables.set(\"age\", Math.floor(Math.random() * (85 - 15 + 1) + 15))",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Nicolas\",\n    \"lastName\": \"Grosso\",\n    \"age\": 29,\n    \"email\":\"nzgrosso34@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/sessions/signup",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/sessions/current",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/sessions/logout",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"nzgrosso@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/sessions/forgot-password",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "Get all carts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get cart by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f7ca697fd7e6e0d8ff8df1",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f7ca697fd7e6e0d8ff8df1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit cart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"quantity\": 2,\n        \"product\": {\n            \"id\": \"645d1f4323031a56dab49d83\"\n        }\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f79925091d7e4e5b4958f3/product/645d1f4323031a56dab49d83",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f79925091d7e4e5b4958f3",
+								"product",
+								"645d1f4323031a56dab49d83"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove cart by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f7ca3f7fd7e6e0d8ff8de6",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f7ca3f7fd7e6e0d8ff8de6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add product to a cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f7ca697fd7e6e0d8ff8df1/product/64f53aa84ae4846f2fdf8e03",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f7ca697fd7e6e0d8ff8df1",
+								"product",
+								"64f53aa84ae4846f2fdf8e03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase a cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f79925091d7e4e5b4958f3/purchase",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f79925091d7e4e5b4958f3",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit cart product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f79925091d7e4e5b4958f3/product/645d1f4323031a56dab49d83",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f79925091d7e4e5b4958f3",
+								"product",
+								"645d1f4323031a56dab49d83"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product from Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{projectUrl}}/api/carts/64f7ca697fd7e6e0d8ff8df1/product/64f53aa84ae4846f2fdf8e03",
+							"host": [
+								"{{projectUrl}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"64f7ca697fd7e6e0d8ff8df1",
+								"product",
+								"64f53aa84ae4846f2fdf8e03"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"key": "lastName",
+			"value": ""
+		},
+		{
+			"key": "age",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		}
+	]
+}

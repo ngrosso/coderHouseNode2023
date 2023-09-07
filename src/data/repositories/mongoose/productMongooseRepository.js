@@ -8,7 +8,6 @@ class ProductMongooseRepository {
 
     const productsDocument = await ProductSchema.paginate({ $and: [{ status: true }, query] }, { page, sort: { price: sort }, limit });
     const { docs, ...rest } = productsDocument;
-
     return {
       payload: docs.map((document) => new Product({
         id: document._id,
@@ -28,7 +27,6 @@ class ProductMongooseRepository {
 
   async findOne(id) {
     const productDocument = await ProductSchema.findOne({ _id: id, status: true });
-
     if (!productDocument) throw new ProductDoesntExistError(id);
     return new Product({
       id: productDocument._id,
@@ -62,8 +60,8 @@ class ProductMongooseRepository {
   }
 
   async update(id, product) {
-    const productDocument = await ProductSchema.updateOne({ _id: id }, product);
-
+    await ProductSchema.updateOne({ _id: id }, product);
+    const productDocument = await this.findOneSpecial(id);
 
     return new Product({
       id: productDocument._id,
@@ -105,7 +103,6 @@ class ProductMongooseRepository {
   async findOneSpecial(id) {
     const productDocument = await ProductSchema.findOne({ _id: id });
 
-    if (!productDocument) throw new ProductDoesntExistError(id);
     return new Product({
       id: productDocument._id,
       title: productDocument.title,

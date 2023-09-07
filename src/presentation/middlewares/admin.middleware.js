@@ -17,7 +17,7 @@ const roleAuth = (req, res, next) => {
       return res.status(403).send({ success: false, error: 'Admin Authentication error' });
     }
 
-    req.email = credentials.email;
+    req.userInfo = credentials.user;
     next();
   });
 

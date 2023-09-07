@@ -25,7 +25,7 @@ export const uploadDocs = (req, res, next) => {
     const docs = req.files;
     const errors = [];
 
-    if(docs.length < 1) return res.status(400).json({ success: false, message: "No files selected" })
+    if(!docs || docs.length < 1) return res.status(400).json({ success: false, message: "No files selected" })
 
     docs.forEach((doc) => {
       if (doc.size > maxSize) errors.push(`File ${file.originalname} is too large, each file limit is 5MB`);
@@ -35,7 +35,7 @@ export const uploadDocs = (req, res, next) => {
       docs.forEach((doc) => {
         fs.unlinkSync(doc.path)
       })
-      return res.status(400).json({ success: false, message: "Upload failed! Check the errors and try again", errors: errors })
+      return res.status(400).json({ success: false, message: "File Upload failed! Check the errors and try again", errors: errors })
     }
 
     req.docs = docs
@@ -76,7 +76,7 @@ export const uploadProduct = (req, res, next) => {
       products.forEach((product) => {
         fs.unlinkSync(product.path)
       })
-      return res.status(400).json({ success: false, message: "Upload failed! Check the errors and try again", errors: errors })
+      return res.status(400).json({ success: false, message: "File Upload failed! Check the errors and try again", errors: errors })
     }
 
     req.products = products

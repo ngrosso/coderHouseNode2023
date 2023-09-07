@@ -26,8 +26,7 @@ class CartMongooseRepository {
   }
 
   async findOne(id) {
-    const cartDocument = await CartSchema.findOne({ _id: id })
-
+    const cartDocument = await CartSchema.findOne({ _id: id });
     if (!cartDocument) throw new CartDoesntExistError(id);
 
     return new Cart({

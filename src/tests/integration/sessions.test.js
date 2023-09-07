@@ -29,7 +29,8 @@ describe('Sessions API Tests', () => {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
-      password: faker.internet.password()
+      password: faker.internet.password(),
+      age: faker.datatype.number({ min: 18, max: 99 }),
     };
     testContext.user = user;
     return await testContext.requester.post('/api/sessions/signup').send(user).then(result => {
@@ -50,7 +51,7 @@ describe('Sessions API Tests', () => {
       expect(result.status).toBe(200);
       expect(result.body).toHaveProperty('success');
       expect(result.body.success).toBe(true);
-      testContext.token = result.headers['set-cookie'][0]
+      testContext.token = result.body.accessToken;
     });
   });
   
@@ -64,7 +65,7 @@ describe('Sessions API Tests', () => {
     });
   });
 
-  test('POST /api/sessions/logout should logout a user', async () => {
+  test('POST /api/sessions/logout should logout the user', async () => {
     return await testContext.requester.post('/api/sessions/logout').set('Cookie', testContext.token).then(result => {
       expect(result.status).toBe(200);
       expect(result.body).toHaveProperty('success');

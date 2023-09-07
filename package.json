@@ -8,6 +8,7 @@
     "dev": "nodemon",
     "command": "NODE_ENV=dev node src/command.js",
     "test": "NODE_ENV=dev NODE_OPTIONS=--experimental-vm-modules jest --silent",
+    "docker": "docker-compose up --build",
     "prod": "NODE_ENV=production node ./src/index.js"
   },
   "type": "module",
