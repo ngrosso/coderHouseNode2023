@@ -8,7 +8,11 @@ class MongooseAdapter {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    logger.info('Base de datos Mongo Atlas conectada');
+    if (uri.includes('localhost')) {
+      logger.info(`Base de datos Mongo Local conectada en ${uri}`);
+    } else {
+      logger.info('Base de datos Mongo Atlas conectada');
+    }
   }
 
   async close() {
