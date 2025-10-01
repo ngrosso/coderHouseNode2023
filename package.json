@@ -2,16 +2,17 @@
   "name": "proyecto-final-coderhouse",
   "version": "0.0.1",
   "description": "Proyecto final de backend, API de ecommerce",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "NODE_ENV=test node ./src/index.js",
-    "dev": "nodemon",
-    "dev:docker": "NODE_ENV=docker node ./src/index.js",
-    "local:docker":"NODE_ENV=local node ./src/index.js",
-    "command": "NODE_ENV=dev node src/command.js",
+    "build": "tsc",
+    "start": "NODE_ENV=test node ./dist/index.js",
+    "dev": "tsx watch ./src/index.ts",
+    "dev:docker": "NODE_ENV=docker node ./dist/index.js",
+    "local:docker": "NODE_ENV=local node ./dist/index.js",
+    "command": "NODE_ENV=dev tsx src/command.ts",
     "test": "NODE_ENV=dev NODE_OPTIONS=--experimental-vm-modules jest --silent",
     "docker": "docker-compose up --build",
-    "prod": "NODE_ENV=production node ./src/index.js"
+    "prod": "NODE_ENV=production node ./dist/index.js"
   },
   "type": "module",
   "repository": {
@@ -56,8 +57,25 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.6.1",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.2",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^29.6.1",
     "nodemon": "^3.0.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }
